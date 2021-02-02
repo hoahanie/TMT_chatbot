@@ -1,5 +1,5 @@
 # TMT_chatbot
-# Frontend
+# Backend
 - pip install - r requirements.txt
 - python api.py
 # Frontend
