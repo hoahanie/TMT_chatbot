@@ -3,3 +3,5 @@ Flask-cors
 joblib
 torch
 fastai==1.0.61
+nltk
+unidecode
