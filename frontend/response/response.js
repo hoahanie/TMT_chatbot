@@ -6,7 +6,7 @@ module.exports = {
     whatyourattr: "Yêu cầu của bạn là gì?",
     showall: "Bạn có muốn xem thêm kết quả không?",
     dontunderstand: "Tôi không hiểu ý của bạn lắm. Xin hãy nhập lại.",
-    reset: 'Xin nhập tên thủ tục bạn cần tìm',
+    reset: 'Hãy nhập thông tin bạn cần nhé',
     diadiem: ['Làm thủ tục này tại:','Bạn có thể đến'],
     nochiphi: 'Thủ tục này không cần chi phí nào',
     chiphi: ['Thủ tục này gồm các lệ phí sau: ','Bạn cần chuẩn bị lệ phí cho: '],
