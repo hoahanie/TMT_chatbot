@@ -48,25 +48,29 @@ def predict_message(message):
 
     #Check color
     tfidfconverter = pickle.load(open('tfidf_color.pickle', 'rb'))
-    clf = pickle.load(open('pickle_color', 'rb'))
+    clf = pickle.load(open('color_pickle', 'rb'))
     X_corp_tfidf = tfidfconverter.transform(X_corp).toarray()
     y_corp_pred = clf.predict(X_corp_tfidf)
     if int(y_corp_pred[0]) ==1:
         check1=True
     else:
         check1=False
+    # if check1==True:
+    #     return "color"
     print("check1")
     print (check1)
 
     #Check size
     tfidfconverter = pickle.load(open('tfidf_size.pickle', 'rb'))
-    clf = pickle.load(open('pickle_size', 'rb'))
+    clf = pickle.load(open('size_pickle', 'rb'))
     X_corp_tfidf = tfidfconverter.transform(X_corp).toarray()
     y_corp_pred = clf.predict(X_corp_tfidf)
     if int(y_corp_pred[0]) ==1:
         check2=True
     else:
         check2=False
+    # if check2==True:
+    #     return "size"
     print("check2")
     print (check2)
 
