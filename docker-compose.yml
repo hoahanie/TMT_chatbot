@@ -11,10 +11,8 @@ services:
       - ./backend:/app
     ports:
       - 5000:5000
-    # networks:
-    #   - mynetwork
+    restart: always
 
-  
   frontend:
     container_name: chatbot_huy_frontend
     image: chatbot_huy_frontend
@@ -29,10 +27,6 @@ services:
       - 3000:3000
     # links:
     #   - backend
-    # networks:
-    #   - mynetwork
     depends_on:
       - backend
-
-networks:
-  mynetwork:
+    restart: always
