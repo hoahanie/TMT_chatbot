@@ -1,0 +1,38 @@
+version: "3.7"
+
+services:
+  backend:
+    container_name: chatbot_huy_backend
+    image: chatbot_huy_backend
+    build:
+      context: ./backend
+      dockerfile: ./dockerfile
+    volumes:
+      - ./backend:/app
+    ports:
+      - 5000:5000
+    # networks:
+    #   - mynetwork
+
+  
+  frontend:
+    container_name: chatbot_huy_frontend
+    image: chatbot_huy_frontend
+    build:
+      context: ./frontend
+      dockerfile: ./dockerfile
+    volumes:
+      - ./frontend/:/app
+    environment:
+      API_URL: "http://backend:5000"
+    ports:
+      - 3000:3000
+    # links:
+    #   - backend
+    # networks:
+    #   - mynetwork
+    depends_on:
+      - backend
+
+networks:
+  mynetwork:

@@ -1,0 +1,12 @@
+FROM node:12-alpine
+
+# ENV NODE_VERSION 12.20.1
+WORKDIR /app
+
+# COPY . /app
+RUN npm i
+RUN npm update
+
+EXPOSE 3000
+
+CMD ["npm","start"]
