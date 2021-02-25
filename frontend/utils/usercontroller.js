@@ -11,7 +11,7 @@ this.searchSession=function (inUserid){
     return null
 }
 
-this.insertSession=function (inUserid){
+this.insertSession=function (inUserid, bot){
     newSession={userId:inUserid,
         getInfo:false,
         getIntent:false,
@@ -22,7 +22,8 @@ this.insertSession=function (inUserid){
             ask_count:0,
             asw_count:0,
             prev_bot_ask:null
-        }
+        },
+        bot: bot
     };
     this.listSession.push(newSession)
     return newSession
