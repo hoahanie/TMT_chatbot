@@ -74,8 +74,8 @@ def predict_message(message):
     print("check2")
     print (check2)
 
-    if check1==True and check2==True:
-        return "color_size"
+    # if check1==True and check2==True:
+    #     return "color_size"
     if check1==True and check2==False:
         return "color"   
     if check1==False and check2==True:
