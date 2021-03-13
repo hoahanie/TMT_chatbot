@@ -710,10 +710,21 @@ module.exports = function (controller) {
 
         // }
     }
+
+    function imageProcess(bot, message) {
+        console.log("Receive image");
+    }
+
+    function masterProcess(bot, message) {
+        console.log("Receive master");
+    }
+
     controller.on("hello", conductOnboarding);
     controller.on("welcome_back", continueConversation);
     controller.on("reset", conductReset);
     controller.on("message_received", callConversationManager);
+    controller.on("image", imageProcess);
+    controller.on("master_message", masterProcess);
     function broadcast(message) {
         console.log(message);
         for (var i = 0; i < userController.listSession.length; i++) {

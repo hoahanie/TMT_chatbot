@@ -10,4 +10,6 @@ RUN npm i dotenv
 
 EXPOSE 3000
 
+ARG DEBUG=botkit:*
+
 CMD ["npm","start"]
