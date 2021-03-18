@@ -4,6 +4,10 @@ from flask_cors import CORS
 from message_handler import catch_intent
 # from query import get_info
 import json
+import base64
+import requests
+
+url = "http://103.113.83.246:8001/api/v1.0/imagesearch"
 
 app = Flask(__name__)
 CORS(app)
@@ -15,16 +19,37 @@ def msg(code, mess=None):
         return jsonify({"code": code, "message": mess}), code
 
 @app.route('/api/send-message', methods=['POST'])
+
+
+
+@app.route('/api/send-message', methods=['POST'])
 def send_message():
     input_data = request.json
+    # print(input_data)
     if "message" not in input_data.keys():
         return msg(400, "Message cannot be None")
     else:
         message = input_data["message"]
+        if "image" in input_data.keys() and input_data["image"]:
+            img_string = input_data["image"][input_data["image"].index(',') + 1:]
+
+            imgdata = base64.b64decode( img_string)
+            filename = 'hoa.jpg'  # I assume you have a way of picking unique filenames
+            with open(filename, 'wb') as f:
+                f.write(imgdata)
+
+           
+            files=[('files',(open(filename,'rb')))]
+            # data = {'files': open ('/content/drive/MyDrive/a.jpg', 'rb')}
+            result = requests.post(url, files=files)
+            data = json.loads(result.text)
+            products=json.loads(data['result']['data'])
+            print(products)
 
     result=catch_intent(input_data['message'])
     print("********")
     print(result)
+
 
     if result=="color_size": 
         return jsonify([[],{'type': 'color_size', 'count': 0}])

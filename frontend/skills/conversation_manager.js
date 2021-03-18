@@ -3,7 +3,7 @@ request = require("request");
 sync = require("sync-request");
 
 var UserController = require("../utils/usercontroller.js");
-const CONVERSATION_MANAGER_ENDPOINT = "http://backend:5000/api/send-message";
+const CONVERSATION_MANAGER_ENDPOINT = "http://localhost:5000/api/send-message";
 
 var userController = new UserController();
 
@@ -487,6 +487,7 @@ module.exports = function (controller) {
             {
                 json: {
                     message: message.text,
+                    image: message.image,
                     state: message.tthc_id ? message.tthc_id : "not_found",
                 },
             },
