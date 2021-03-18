@@ -81,20 +81,26 @@ var Botkit = {
         var message = {
             type: "outgoing",
             text: text,
+            image: that.image,
         };
         this.clearReplies();
         that.renderMessage(message);
+        if(that.image){
+            that.renderImage(message)
+        }
 
         that.deliverMessage({
             type: "message",
             text: text,
+            image: that.image,
             tthc_id: that.tthc_id,
             user: this.guid,
             channel: this.options.use_sockets ? "socket" : "webhook",
         });
 
         this.input.value = "";
-
+        that.image = null;
+        $("#image-label").text("");
         return false;
     },
     sendCustom: function (text, payload, e) {
@@ -281,6 +287,27 @@ var Botkit = {
 
         that.message_list.appendChild(that.next_line);
 
+        animateTyping();
+        if (!message.isTyping) {
+            delete that.next_line;
+        }
+    },
+    renderImage: function(message){
+        var that = this;
+        if (!that.next_line) {
+            that.next_line = that.createNextLine();
+        }
+        if (message.image) {
+            var imgElement = document.createElement("img");
+            imgElement.src = message.image;
+            imgElement.style="width: 100%";
+            message.html = imgElement.outerHTML;
+        }
+        const messageNode = that.message_template({
+            message: message,
+        });
+        that.next_line.innerHTML = messageNode;
+        that.message_list.appendChild(that.next_line);
         animateTyping();
         if (!message.isTyping) {
             delete that.next_line;
@@ -614,6 +641,22 @@ var Botkit = {
 
         that.input = document.getElementById("messenger_input");
 
+        $("#image-icon").click(function () {
+            $("#image-input").trigger('click');
+        });
+          
+        $('#image-input').on('change', function() {
+            var image = document.getElementById("image-input").files[0];
+            console.log(image)
+            $("#image-label").text(image.name);
+            var fileReader = new FileReader();
+            fileReader.onloadend = function() {
+                that.image = fileReader.result;
+            }
+            fileReader.readAsDataURL(image);
+          })
+
+
         that.focus();
 
         that.on("connected", function () {
@@ -703,3 +746,4 @@ var setId = function (id) {
 (function () {
     Botkit.boot();
 })();
+
