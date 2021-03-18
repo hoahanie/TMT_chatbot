@@ -75,7 +75,7 @@ var Botkit = {
     send: function (text, e) {
         var that = this;
         if (e) e.preventDefault();
-        if (!text) {
+        if (!text && !that.image) {
             return;
         }
         var message = {
@@ -84,7 +84,9 @@ var Botkit = {
             image: that.image,
         };
         this.clearReplies();
-        that.renderMessage(message);
+        if(text){
+            that.renderMessage(message);
+        }
         if(that.image){
             that.renderImage(message)
         }
