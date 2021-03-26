@@ -3,7 +3,7 @@ request = require("request");
 sync = require("sync-request");
 
 var UserController = require("../utils/usercontroller.js");
-const CONVERSATION_MANAGER_ENDPOINT = "http://localhost:5000/api/send-message";
+const CONVERSATION_MANAGER_ENDPOINT = "http://backend:5000/api/send-message";
 
 var userController = new UserController();
 
@@ -445,11 +445,25 @@ module.exports = function (controller) {
         });
     }
 
+    function sendListConnect(bot, message) {
+        bot.reply(message, {
+            text: "Chọn những cuộc trò chuyện đang online dưới đây:",
+            choices: userController.listSession.map((e) => ({
+                key: e.userId,
+                value: e.userId,
+            })),
+        });
+    }
+
     function callConversationManager(bot, message) {
         var body = null;
         var id = message.user;
 
         var raw_mesg = message.text;
+        if (raw_mesg.toLowerCase() == "listconnect")
+        {
+            return sendListConnect(bot, message);
+        }
         if (
             new RegExp(
                 [

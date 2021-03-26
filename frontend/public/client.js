@@ -376,6 +376,7 @@ var Botkit = {
                     tthc_id: options[i].key,
                     tthc_name: options[i].value,
                     select: true,
+                    text: option[i].value
                 });
             });
         });
