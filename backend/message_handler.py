@@ -124,14 +124,14 @@ def predict_message(message):
         if intent in ['inform','order']:
             color, size, amount, product_name = get_entity_from_message(message)
             if size:
-                if 's' in size.lower():
-                    size = 'size S'
-                elif 'xxl' in size.lower():
+                if 'xxl' in size.lower():
                     size = 'size XXL'
                 elif 'xl' in size.lower():
                     size = 'size XL'
                 elif 'l' in size.lower():
                     size = 'size L'
+                elif 's' in size.lower():
+                    size = 'size S'
             
             print('**********')
             print(size)
