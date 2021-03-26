@@ -1,7 +1,0 @@
-Flask
-Flask-cors
-joblib
-scikit-learn==0.22.1
-#fastai==1.0.61
-nltk
-unidecode
