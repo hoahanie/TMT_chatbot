@@ -7,21 +7,23 @@ BASEDIR = path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__fil
 # BASEDIR = 'D:\\GitHub\\VnCoreNLP'
 vncorenlp_file = path.join(BASEDIR,path.join('VnCoreNLP','VnCoreNLP-1.1.1.jar'))
 
-MODELS_PATH = path.join(
-    path.dirname(path.dirname(path.abspath(__file__))),
-    'backend/entity_data'
-)
+# MODELS_PATH = path.join(
+#     path.dirname(path.dirname(path.abspath(__file__))),
+#     '/backend/entity_data'
+# )
 
 ### COMMON
 product_pt = '[á|a]o|qu[a|ầ]n|v[a|á]y|đầm|dam|t[ú|u]i|n[ó|o]n|mũ|kho[a|á]c'
-df_amount_suf = pd.read_csv(path.join(MODELS_PATH, 'amount_suf.csv'), header = None)
+df_amount_suf = pd.read_csv('./entity_data/amount_suf.csv', header = None)
 amount_suf = df_amount_suf[0].tolist()
 pt_amount_suf = '|'.join(amount_suf)
 ###------------------------------------------
 
 ### COLOR_PRODUCT
-df_colors = pd.read_csv(path.join(MODELS_PATH, 'colors.csv'), header=None)
-df_colors_2 = pd.read_csv(path.join(MODELS_PATH, 'colors_2.csv'), header = None)
+# df_colors = pd.read_csv(path.join(MODELS_PATH, './colors.csv'), header=None)
+# df_colors_2 = pd.read_csv(path.join(MODELS_PATH, './colors_2.csv'), header = None)
+df_colors = pd.read_csv('./entity_data/colors.csv', header=None)
+df_colors_2 = pd.read_csv('./entity_data/colors_2.csv', header = None)
 colors = df_colors[0].tolist()
 colors_2 = df_colors_2[0].tolist()
 
@@ -53,7 +55,7 @@ amount_pt_sum = r'{}|{}|{}|{}'.format(amount_pt, amount_pt_2, amount_pt_4, amoun
 ###------------------------------------------
 
 ### MATERIAL_PRODUCT
-df_material = pd.read_csv(path.join(MODELS_PATH, 'material.csv'), header = None)
+df_material = pd.read_csv('./entity_data/material.csv', header = None)
 material = df_material[0].tolist()
 pt_material = r'((ch[a|ấ]t(\sli[e|ệ]u)*|lo[a|ạ]i)\s)*(' + '|'.join(material) + r')(\sc[u|ứ]ng|\sm[e|ề]m)*'
 ###------------------------------------------
@@ -249,7 +251,7 @@ def join_continuous_sq(list_sq, sentences):
     return res
 
 if __name__ == "__main__":
-    print(MODELS_PATH)
+    # print(MODELS_PATH)
     # print(label_entity("mình đặt 1 cái áo size S màu đỏ"))
     # print(get_entity_sq_from_list_pt(pattern_list, "mình đặt 1 cái áo size S màu đỏ", "color_product"))
     print(get_entity_sq_from_list_pt(pattern_list['amount_product'], 'sáu cái nha', 'amount_product'))
