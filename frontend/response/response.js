@@ -34,5 +34,8 @@ module.exports = {
     rep_return: "Shop chào bạn ạ return",
     have_product_name: "Dạ, bên shop vẫn còn hàng nhé anh chị.",
     dont_reg_color: "Xin lỗi, shop chưa hiểu ý anh chị ạ. Anh chị cần màu gì ?",
-    misunderstand_color: "Anh chị chốt lại là màu nào giúp shop với ạ ?"
+    misunderstand_color: "Anh chị chốt lại là màu nào giúp shop với ạ ?",
+    misunderstand_size: "Anh chị chốt lại là size nào giúp shop với ạ ?",
+    misunderstand_amount: "Anh chị chốt lại số lượng giúp shop với ạ ?",
+    misunderstand_product_name: "Anh chị chốt lại sản phẩm mình muốn đặt giúp shop với ạ ?",
 }

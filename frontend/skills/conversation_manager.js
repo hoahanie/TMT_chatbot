@@ -541,6 +541,24 @@ module.exports = function (controller) {
         });
     }
 
+    function misunderstand_size(bot, message, body) {
+        bot.reply(message, {
+            text: resp.misunderstand_size,
+        });
+    }
+
+    function misunderstand_amount(bot, message, body) {
+        bot.reply(message, {
+            text: resp.misunderstand_amount,
+        });
+    }
+
+    function misunderstand_product_name(bot, message, body) {
+        bot.reply(message, {
+            text: resp.misunderstand_product_name,
+        });
+    }
+
     function handleUnknown(bot, message, body) {
         bot.reply(message, {
             text: resp.dontunderstand,
@@ -715,6 +733,15 @@ module.exports = function (controller) {
                         break;
                     case "misunderstand_color":
                         misunderstand_color(bot, message, body);
+                        break;
+                    case "misunderstand_size":
+                        misunderstand_size(bot, message, body);
+                        break;
+                    case "misunderstand_amount":
+                        misunderstand_amount(bot, message, body);
+                        break;
+                    case "misunderstand_product_name":
+                        misunderstand_product_name(bot, message, body);
                         break;
 
                     default:
