@@ -3,7 +3,8 @@ import numpy as np
 import pandas as pd 
 
 from sklearn.feature_extraction.text import TfidfVectorizer  
-from sklearn.model_selection import train_test_split  
+from sklearn.model_selection import train_test_split
+from entity import get_entity_sq_from_list_pt, pattern_list
 from sklearn import svm,metrics
 import pickle
 import joblib
@@ -14,21 +15,7 @@ nltk.download('stopwords')
 from nltk.corpus import stopwords 
 import unidecode
 
-# %matplotlib inline
-# from constant import clf, INTENT_THRESHOLD, TYPE_NAME_SEARCH_TTHC, list_chiphi_notification, list_giayto_notification, \
-#     list_ketqua_notification, list_thoigian_notification, list_thuchien_notification, list_diadiem_notification
-# from query import search
-# from functools import reduce
-
-
-# def searchTTHC(type_database, query):
-#     query = preprocess_message(query)
-#     [result, info] = search(type_database, query)
-#     if len(result) > 0:
-#         TTHC = list(map(lambda x: list(map(lambda y: {y[0]: y[1]}, x.items())), result))
-#         return [flatten(TTHC), info]
-#     return [[],{'type': 'unknown', 'count': 0}]
-
+import json
 
 def catch_intent(message):
     message = preprocess_message(message)
@@ -39,112 +26,188 @@ def catch_intent(message):
     #     return intent
     return predict_message(message)
 
+def catch_image(products):
+    if len(products) > 1:
+        return 'transfer_to_admin'
+    else:
+        return follow_rules('user_image', 'inform_img', products[0])
+        # return products[0]
+
+
+def answering_generator(state, product_info = None):
+    if state == 'inform_img':
+        return product_info
+    # elif state == 'id_product':
+    #     ls = ls_request_id_product
+    #     # print('Shop: San pham [id_product] nay phai khong a ?')
+    # elif state == 'hello':
+    #     ls = ls_of_ls[2]
+    # elif state == 'done':
+    #     ls = ls_of_ls[3]
+    # elif state == 'connect':
+    #     ls = ls_of_ls[4]
+    # elif state == 'request':
+    #     ls = ls_of_ls[10]
+    # elif state == 'order':
+    #     ls = ls_Request
+    # elif state == 'ok_1':
+    #     ls = ls_InfoMember
+    # elif state == 'ok_2':
+    #     ls = ['Cam on ban da dat hang', 'Shop xin cam on. Chuc ban mot ngay tot lanh', 'Cam on quy khach']
+    # else:
+    #     # print('----', state)
+    #     ls = [state]
+    # return ls
+
+def follow_rules(start, state, product_info = None):
+    with open('rule.json', 'rb') as json_data:
+        rules = json.loads(json_data.read())
+        # store last state
+    return answering_generator(state, product_info)
+
+def get_entity_from_message(message):
+    color = get_entity_sq_from_list_pt(pattern_list['color_product'], message, 'color_product')
+    size = get_entity_sq_from_list_pt(pattern_list['size'], message, 'size')
+    amount = get_entity_sq_from_list_pt(pattern_list['amount_product'], message, 'amount_product')
+    product_name = get_entity_sq_from_list_pt(pattern_list['product_name'], message, 'product_name')
+    if color:
+        color = message[color[0][0]:color[0][1]]
+    if size:
+        size = message[size[0][0]:size[0][1]]
+    if amount:
+        amount = message[amount[0][0]:amount[0][1]]
+    if product_name:
+        product_name = message[product_name[0][0]:product_name[0][1]]
+    return color, size, amount, product_name
+
 
 def predict_message(message):
+    with open('db.json', 'rb') as json_data:
+        conversation_history = json.loads(json_data.read())
+    
+    res = {}
 
     X_corp = np.array([message])
-    check1=True
-    check2=True
 
-    #Check color
-    tfidfconverter = pickle.load(open('tfidf_color.pickle', 'rb'))
-    clf = pickle.load(open('color_pickle', 'rb'))
+    # Check intent by svm multiclass model
+
+    intent_list = ['hello', 'done', 'inform', 'request', 'feedback', 'connect', 'order', 'changing', 'return']
+    tfidfconverter = pickle.load(open('tfidf.pickle', 'rb'))
+    
+    clf = pickle.load(open('hungne', 'rb'))
     X_corp_tfidf = tfidfconverter.transform(X_corp).toarray()
     y_corp_pred = clf.predict(X_corp_tfidf)
-    if int(y_corp_pred[0]) ==1:
-        check1=True
-    else:
-        check1=False
-    # if check1==True:
-    #     return "color"
-    print("check1")
-    print (check1)
+    intent = int(y_corp_pred[0])
+    print(intent_list[intent])
+    if intent >= 0 and intent <= 8:
+        intent = intent_list[intent]
 
-    #Check size
-    tfidfconverter = pickle.load(open('tfidf_size.pickle', 'rb'))
-    clf = pickle.load(open('size_pickle', 'rb'))
-    X_corp_tfidf = tfidfconverter.transform(X_corp).toarray()
-    y_corp_pred = clf.predict(X_corp_tfidf)
-    if int(y_corp_pred[0]) ==1:
-        check2=True
-    else:
-        check2=False
-    # if check2==True:
-    #     return "size"
-    print("check2")
-    print (check2)
+        last_order = []
+        if conversation_history:
+                for ele in ['found_id_product',
+                            'rep_hello',
+                            'rep_done',
+                            'rep_inform',
+                            'rep_request',
+                            'rep_feedback',
+                            'rep_connect',
+                            'rep_order', 'rep_order_product_name', 'rep_order_color','rep_order_size', 'rep_order_amount',
+                            'have_product_name',
+                            'misunderstand_color']:
+                    if ele in conversation_history[-1]:
+                        last_order = conversation_history[-1][ele]
+                        break
 
-    # if check1==True and check2==True:
-    #     return "color_size"
-    if check1==True and check2==False:
-        return "color"   
-    if check1==False and check2==True:
-        return "size"
-    if check1==False and check2==False:
-        return "nothing"
-    # #tfidf_converter
-    # tfidfconverter = pickle.load(open('tfidf.pickle', 'rb'))
-    # tfidfconverter = pickle.load(open('tfidf.pickle', 'rb'))
-    # clf = pickle.load(open('module_pickle', 'rb'))
+        if intent in ['inform','order']:
+            color, size, amount, product_name = get_entity_from_message(message)
+            
+            print('**********')
+            print(color)
+            print(last_order)
+            if last_order:
+                if last_order[0]:
+                    # Consider misunderstand about color
+                    if type(last_order[0]) is not list:
+                        if color and color != last_order[0]:
+                            res['misunderstand_color'] = [[color,last_order[0]], last_order[1] if last_order[1] else size,
+                            last_order[2] if last_order[2] else amount, last_order[3] if last_order[3] else product_name]
+                            return res
+                        color = last_order[0]
+                if last_order[1]:
+                    size = last_order[1]
+                if last_order[2]:
+                    amount = last_order[2]
+                if last_order[3]:
+                    product_name = last_order[3]
+
+
+            print('*********')
+            
+            if not product_name:
+                res['rep_order_product_name'] = [color, size, amount, product_name]
+            elif not color:
+                res['rep_order_color'] = [color, size, amount, product_name]
+            elif not size:
+                res['rep_order_size'] = [color, size, amount, product_name]
+            elif not amount:
+                res['rep_order_amount'] = [color, size, amount, product_name]
+            else:
+                res['rep_' + intent] = [color, size, amount, product_name]
+        
+        elif intent in ['request']: # request
+            check_reject = get_entity_sq_from_list_pt(pattern_list['reject'], message, 'reject')
+            if conversation_history[-1] in ['rep_order', 'rep_inform'] and check_reject:
+                print('REJECT')
+                res['transfer_to_admin'] = None
+            else:
+                res['have_product_name'] = last_order
+        else:
+            res['rep_' + intent] = None
+    else:
+        res['nothing'] = None
+    
+    return res
+
+
+    # check1=True
+    # check2=True
+
+    # #Check color
+    # tfidfconverter = pickle.load(open('tfidf_color.pickle', 'rb'))
+    # clf = pickle.load(open('color_pickle', 'rb'))
     # X_corp_tfidf = tfidfconverter.transform(X_corp).toarray()
     # y_corp_pred = clf.predict(X_corp_tfidf)
     # if int(y_corp_pred[0]) ==1:
-    #     return True
+    #     check1=True
     # else:
-    #     return False
-    # predict_result = clf.predict(message)
+    #     check1=False
+    # # if check1==True:
+    # #     return "color"
+    # print("check1")
+    # print (check1)
 
-    # proba = max(predict_result[2].numpy()) * 100
+    # #Check size
+    # tfidfconverter = pickle.load(open('tfidf_size.pickle', 'rb'))
+    # clf = pickle.load(open('size_pickle', 'rb'))
+    # X_corp_tfidf = tfidfconverter.transform(X_corp).toarray()
+    # y_corp_pred = clf.predict(X_corp_tfidf)
+    # if int(y_corp_pred[0]) ==1:
+    #     check2=True
+    # else:
+    #     check2=False
+    # # if check2==True:
+    # #     return "size"
+    # print("check2")
+    # print (check2)
 
-    # if (proba < INTENT_THRESHOLD):
-    #     return 'none'
-
-    # return get_name_intent(int(predict_result[0]))
-
-
-# def extract_and_get_intent(message):
-#     for notification in list_chiphi_notification:
-#         if message.lower().find(notification) != -1:
-#             return 'chiphi'
-
-#     for notification in list_diadiem_notification:
-#         if message.lower().find(notification) != -1:
-#             return 'diadiem'
-
-#     for notification in list_thoigian_notification:
-#         if message.lower().find(notification) != -1:
-#             return 'thoigian'
-
-#     for notification in list_ketqua_notification:
-#         if message.lower().find(notification) != -1:
-#             return 'ketqua'
-
-#     for notification in list_thuchien_notification:
-#         if message.lower().find(notification) != -1:
-#             return 'thuchien'
-
-#     for notification in list_giayto_notification:
-#         if message.lower().find(notification) != -1:
-#             return 'giayto'
-
-#     return 'none'
-
-
-# def get_name_tthc(message):
-#     if 'lĩnh vực' in message.lower():
-#         filter_message = re.sub(r"^.*?(lĩnh vực)", '', message.lower())
-#         type_name = TYPE_NAME_SEARCH_TTHC.LINH_VUC
-#         return [filter_message, type_name]
-
-#     if 'của' in message.lower():
-#         filter_message = re.sub(r"^.*?(của)", '', message.lower())
-#         type_name = TYPE_NAME_SEARCH_TTHC.CO_QUAN
-#         return [filter_message, type_name]
-
-#     filter_message = re.sub(
-#         r"^.*?((thủ tục)|(cách làm)|(cách))", '', message.lower())
-#     type_name = TYPE_NAME_SEARCH_TTHC.THU_TUC
-#     return [filter_message, type_name]
+    # # if check1==True and check2==True:
+    # #     return "color_size"
+    # if check1==True and check2==False:
+    #     return "color"   
+    # if check1==False and check2==True:
+    #     return "size"
+    # if check1==False and check2==False:
+    #     return "nothing"
 
 
 def preprocess_message(message):

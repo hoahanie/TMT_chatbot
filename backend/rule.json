@@ -1,0 +1,49 @@
+{
+    "user_image": {
+        "inform_img": ["check_id_product"],
+        "check_id_product": ["reject", "ok", "chat_emp"],
+        "reject": ["chat_emp"],
+        "ok": ["info_product"]
+    },
+    "info_product": {
+        "hello": ["hello", "request_info"],
+        "request_info": ["check_name_product"],
+        "check_name_product": ["order", "info_product", "inform_Y", "done"],
+        "done": ["end"],
+        "inform_Y": ["check_name_product"]
+    },
+    "info_contact": {
+        "hello": ["hello", "request_contact"],
+        "request_contact": ["done"],
+        "done": ["end"]
+    },
+    "size_recommend": {
+        "hello": ["hello", "request_size"],
+        "request_size": ["done"],
+        "done": ["end"]
+    },
+    "reflect": {
+        "hello": ["hello", "feedback"],
+        "feedback": ["chat_emp"]
+    },
+    "chat_emp": {
+        "hello": ["hello", "connect"],
+        "connect": ["end"]
+    },
+    "order": {
+        "hello": ["hello", "ordering"],
+        "ordering": ["ok_1"],
+        "ok_1": ["ok_2"],
+        "ok_2": ["end"]
+    },
+    "change": {
+        "hello": ["hello", "changing"],
+        "changing": ["ok"],
+        "ok": ["end"]
+    },
+    "return": {
+        "hello": ["hello", "returning"],
+        "returning": ["ok"],
+        "ok": ["end"]
+    }
+}

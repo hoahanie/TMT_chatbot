@@ -428,11 +428,119 @@ module.exports = function (controller) {
             text: resp.s,
         });
     }
+    function transfer_to_admin(bot, message, body) {
+        bot.reply(message, {
+            text: resp.transfer_to_admin,
+        });
+    }
+    function found_id_product(bot, message, body) {
+        bot.reply(message, {
+            text: resp.found_id_product + body[0]['product_name'],
+        });
+    }
+
+    function rep_hello(bot, message, body){
+        bot.reply(message, {
+            text: resp.rep_hello,
+        });
+    }
+
+    function rep_done(bot, message, body){
+        bot.reply(message, {
+            text: resp.rep_done,
+        });
+    }
+
+    function rep_inform(bot, message, body){
+        bot.reply(message, {
+            text: resp.rep_inform + body[0][2] + " " + body[0][3] + " " + body[0][0] + " " + body[0][1],
+        });
+    }
+
+    function rep_request(bot, message, body){
+        bot.reply(message, {
+            text: resp.rep_request,
+        });
+    }
+
+    function rep_feedback(bot, message, body){
+        bot.reply(message, {
+            text: resp.rep_feedback,
+        });
+    }
+
+    function rep_connect(bot, message, body){
+        bot.reply(message, {
+            text: resp.rep_connect,
+        });
+    }
+
+    function rep_order(bot, message, body){
+        bot.reply(message, {
+            text: resp.rep_order,
+        });
+    }
+
+    function rep_order_color(bot, message, body){
+        bot.reply(message, {
+            text: resp.rep_order_color,
+        });
+    }
+
+    function rep_order_size(bot, message, body){
+        bot.reply(message, {
+            text: resp.rep_order_size,
+        });
+    }
+
+    function rep_order_amount(bot, message, body){
+        bot.reply(message, {
+            text: resp.rep_order_amount,
+        });
+    }
+
+    function rep_order_product_name(bot, message, body){
+        bot.reply(message, {
+            text: resp.rep_order_product_name,
+        });
+    }
+
+    function rep_changing(bot, message, body){
+        bot.reply(message, {
+            text: resp.rep_changing,
+        });
+    }
+
+    function rep_return(bot, message, body){
+        bot.reply(message, {
+            text: resp.rep_return,
+        });
+    }
+
+    function have_product_name(bot, message, body){
+        bot.reply(message, {
+            text: resp.have_product_name,
+        });
+    }
+
     function nothing(bot, message, body) {
         bot.reply(message, {
             text: resp.n,
         });
     }
+
+    function dont_reg_color(bot, message, body) {
+        bot.reply(message, {
+            text: resp.dont_reg_color,
+        });
+    }
+
+    function misunderstand_color(bot, message, body) {
+        bot.reply(message, {
+            text: resp.misunderstand_color,
+        });
+    }
+
     function handleUnknown(bot, message, body) {
         bot.reply(message, {
             text: resp.dontunderstand,
@@ -562,9 +670,66 @@ module.exports = function (controller) {
                     case "size":
                         size(bot, message, body);
                         break;
+                    case "transfer_to_admin":
+                        transfer_to_admin(bot, message, body);
+                        break;
+                    case "found_id_product":
+                        found_id_product(bot, message, body);
+                        break;
+                    case "rep_hello":
+                        rep_hello(bot, message, body);
+                        break;
+                    case "rep_done":
+                        rep_done(bot, message, body);
+                        break;
+                    case "rep_inform":
+                        rep_inform(bot, message, body);
+                        console.log(body[0])
+                        break;
+                    case "rep_request":
+                        rep_request(bot, message, body);
+                        break;
+                    case "rep_feedback":
+                        rep_feedback(bot, message, body);
+                        break;
+                    case "rep_connect":
+                        rep_connect(bot, message, body);
+                        break;
+                    case "rep_order":
+                        rep_inform(bot, message, body);
+                        console.log(body[0])
+                        break;
+                    case "rep_order_color":
+                        rep_order_color(bot, message, body);
+                        break;
+                    case "rep_order_size":
+                        rep_order_size(bot, message, body);
+                        break;
+                    case "rep_order_amount":
+                        rep_order_amount(bot, message, body);
+                        break;
+                    case "rep_order_product_name":
+                        rep_order_product_name(bot, message, body);
+                        break;
+                    case "rep_changing":
+                        rep_changing(bot, message, body);
+                        break;
+                    case "rep_return":
+                        rep_return(bot, message, body);
+                        break;
+                    case "have_product_name":
+                        have_product_name(bot, message, body);
+                        break;
                     case "nothing":
                         nothing(bot, message, body);
                         break;
+                    case "dont_reg_color":
+                        dont_reg_color(bot, message, body);
+                        break;
+                    case "misunderstand_color":
+                        misunderstand_color(bot, message, body);
+                        break;
+
                     default:
                         handleUnknown(bot, message, body);
                 }

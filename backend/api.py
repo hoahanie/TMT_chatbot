@@ -1,11 +1,12 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 # from message_handler import catch_intent, get_name_tthc,searchTTHC,flatten
-from message_handler import catch_intent
+from message_handler import catch_intent, catch_image
 # from query import get_info
 import json
 import base64
 import requests
+import codecs
 
 url = "http://103.113.83.246:8001/api/v1.0/imagesearch"
 
@@ -23,13 +24,19 @@ def msg(code, mess=None):
 
 
 @app.route('/api/send-message', methods=['POST'])
+
 def send_message():
     input_data = request.json
+    with open('db.json', 'rb') as json_data:
+        conversation_history = json.loads(json_data.read())
+    print(conversation_history)
+    
     # print(input_data)
     if "message" not in input_data.keys():
         return msg(400, "Message cannot be None")
     else:
         message = input_data["message"]
+        products = []
         if "image" in input_data.keys() and input_data["image"]:
             img_string = input_data["image"][input_data["image"].index(',') + 1:]
 
@@ -46,18 +53,63 @@ def send_message():
             products=json.loads(data['result']['data'])
             print(products)
 
-    result=catch_intent(input_data['message'])
+    if products and not message:
+        result = catch_image(products)
+    elif message and not products:
+        result=catch_intent(message)
+    else:
+        print('gui hinh kem cau nhan')
     print("********")
-    print(result)
+    # print(result)
+    conversation_history += [result]
+    with codecs.open('db.json', 'w') as reader:
+        json.dump(conversation_history, reader)
+    
 
 
-    if result=="color_size": 
-        return jsonify([[],{'type': 'color_size', 'count': 0}])
-    if result=="color":
-        return jsonify([[],{'type': 'color', 'count': 0}])   
-    if result=="size":
-        return jsonify([[],{'type': 'size', 'count': 0}])
-    if result=="nothing":
+    # if type(result) is dict:
+    #     return jsonify([result,{'type': 'found_id_product', 'count': 0}])
+    if 'transfer_to_admin' in result:
+        return jsonify([[],{'type': 'transfer_to_admin', 'count': 0}])
+    # if result=='color_size': 
+    #     return jsonify([[],{'type': 'color_size', 'count': 0}])
+    # if result=='color':
+    #     return jsonify([[],{'type': 'color', 'count': 0}])   
+    # if result=='size':
+    #     return jsonify([[],{'type': 'size', 'count': 0}])
+    if "rep_hello" in result:
+        return jsonify([[],{'type': 'rep_hello', 'count': 0}])
+    if "rep_done" in result:
+        return jsonify([[],{'type': 'rep_done', 'count': 0}])
+    if "rep_inform" in result:
+        return jsonify([result['rep_inform'],{'type': 'rep_inform', 'count': 0}])
+    if "rep_request" in result:
+        return jsonify([[],{'type': 'rep_request', 'count': 0}])
+    if "rep_feedback" in result:
+        return jsonify([[],{'type': 'rep_feedback', 'count': 0}])
+    if "rep_connect" in result:
+        return jsonify([[],{'type': 'rep_connect', 'count': 0}])
+    if "rep_order" in result:
+        return jsonify([result['rep_order'],{'type': 'rep_order', 'count': 0}])
+    if "rep_order_color" in result:
+        return jsonify([[],{'type': 'rep_order_color', 'count': 0}])
+    if "rep_order_size" in result:
+        return jsonify([[],{'type': 'rep_order_size', 'count': 0}])
+    if "rep_order_amount" in result:
+        return jsonify([[],{'type': 'rep_order_amount', 'count': 0}])
+    if "rep_order_product_name" in result:
+        return jsonify([[],{'type': 'rep_order_product_name', 'count': 0}])
+    if "rep_changing" in result:
+        return jsonify([[],{'type': 'rep_changing', 'count': 0}])
+    if "rep_return" in result:
+        return jsonify([[],{'type': 'rep_return', 'count': 0}])
+    if "have_product_name" in result:
+        return jsonify([[],{'type': 'have_product_name', 'count': 0}])
+    if "dont_reg_color" in result:
+        return jsonify([[],{'type': 'dont_reg_color', 'count': 0}])
+    if "misunderstand_color" in result:
+        return jsonify([[],{'type': 'misunderstand_color', 'count': 0}])
+    if 'nothing' in result:
         return jsonify([[],{'type': 'nothing', 'count': 0}])
 
 
