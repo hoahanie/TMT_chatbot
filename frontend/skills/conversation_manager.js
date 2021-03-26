@@ -3,7 +3,7 @@ request = require("request");
 sync = require("sync-request");
 
 var UserController = require("../utils/usercontroller.js");
-const CONVERSATION_MANAGER_ENDPOINT = "http://localhost:5000/api/send-message";
+const CONVERSATION_MANAGER_ENDPOINT = "http://backend:5000/api/send-message";
 
 var userController = new UserController();
 
