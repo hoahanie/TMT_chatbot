@@ -5,6 +5,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer  
 from sklearn.model_selection import train_test_split
 from entity import get_entity_sq_from_list_pt, pattern_list
+from product_handler import suggest_product
 from sklearn import svm,metrics
 import pickle
 import joblib
@@ -16,10 +17,11 @@ from nltk.corpus import stopwords
 import unidecode
 
 import json
+from functools import reduce
 
 def catch_intent(message):
     message = preprocess_message(message)
-    print(message)
+    # print(message)
 
     # intent = extract_and_get_intent(message)
     # if intent != 'none':
@@ -27,43 +29,31 @@ def catch_intent(message):
     return predict_message(message)
 
 def catch_image(products):
-    if len(products) > 1:
-        return 'transfer_to_admin'
+    print('*****')
+    print(products)
+    res = {}
+    if not products: #Cannot regconize the image
+        res['not_found_product_from_image'] = None
     else:
-        return follow_rules('user_image', 'inform_img', products[0])
-        # return products[0]
-
-
-def answering_generator(state, product_info = None):
-    if state == 'inform_img':
-        return product_info
-    # elif state == 'id_product':
-    #     ls = ls_request_id_product
-    #     # print('Shop: San pham [id_product] nay phai khong a ?')
-    # elif state == 'hello':
-    #     ls = ls_of_ls[2]
-    # elif state == 'done':
-    #     ls = ls_of_ls[3]
-    # elif state == 'connect':
-    #     ls = ls_of_ls[4]
-    # elif state == 'request':
-    #     ls = ls_of_ls[10]
-    # elif state == 'order':
-    #     ls = ls_Request
-    # elif state == 'ok_1':
-    #     ls = ls_InfoMember
-    # elif state == 'ok_2':
-    #     ls = ['Cam on ban da dat hang', 'Shop xin cam on. Chuc ban mot ngay tot lanh', 'Cam on quy khach']
-    # else:
-    #     # print('----', state)
-    #     ls = [state]
-    # return ls
-
-def follow_rules(start, state, product_info = None):
-    with open('rule.json', 'rb') as json_data:
-        rules = json.loads(json_data.read())
-        # store last state
-    return answering_generator(state, product_info)
+        product_names = []
+        for ele in products:
+            ele_name = get_entity_sq_from_list_pt(pattern_list['product_name'], ele['product_name'].lower(), 'product_name')
+            if ele_name:
+                product_names += [ele['product_name'].lower()[ele_name[0][0]:ele_name[0][1]]]
+        print('++++')
+        print(product_names)
+        if len(product_names) == 1:
+            suggestion = suggest_product(product_names[0], '', '', '')
+            if not suggestion:
+                res['not_found_product'] = None
+            else:
+                res['rep_order_color'] = ['', '', '', product_names[0], suggestion] 
+        else:
+            # ['a','b','c'] -> 'a, b, c'
+            product_string = reduce(lambda x,y: x+' hay là '+y, product_names[1:],product_names[0])
+            res['found_lots_products'] = product_string
+            print(product_string)
+    return res
 
 def get_entity_from_message(message):
     color = get_entity_sq_from_list_pt(pattern_list['color_product'], message, 'color_product')
@@ -80,6 +70,17 @@ def get_entity_from_message(message):
         product_name = message[product_name[0][0]:product_name[0][1]]
     return color, size, amount, product_name
 
+def amount_to_int(amount):
+    amount_index = get_entity_sq_from_list_pt(pattern_list['number'], amount, 'number')
+    # return amount_index
+    if not amount_index:
+        ls_count = ['một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín', 'mười']
+        for ele in ls_count:
+            if ele in amount.lower():
+                return ls_count.index(ele) + 1
+        return 0
+    else:
+        return int(amount[amount_index[0][0]:amount_index[0][1]])
 
 def predict_message(message):
     with open('db.json', 'rb') as json_data:
@@ -123,19 +124,23 @@ def predict_message(message):
 
         if intent in ['inform','order']:
             color, size, amount, product_name = get_entity_from_message(message)
+            # print('met quia')
+            # print(amount)
             if size:
                 if 'xxl' in size.lower():
-                    size = 'size XXL'
+                    size = 'XXL'
                 elif 'xl' in size.lower():
-                    size = 'size XL'
+                    size = 'XL'
                 elif 'l' in size.lower():
-                    size = 'size L'
+                    size = 'L'
                 elif 's' in size.lower():
-                    size = 'size S'
+                    size = 'S'
+            if amount:
+                amount = amount_to_int(amount)
             
-            print('**********')
-            print(size)
-            print(last_order)
+            # print('**********')
+            # print(size)
+            # print(last_order)
             new_order = [color, size, amount, product_name]
             ls_feature = ['color', 'size', 'amount', 'product_name']
             if last_order:
@@ -149,13 +154,13 @@ def predict_message(message):
                                     if ele == idx:
                                         res['misunderstand_' + ls_feature[idx]] += [[new_order[ele], last_order[ele]]]
                                     else:
-                                        print('hehehehehe')
-                                        print(last_order)
-                                        print(idx)
+                                        # print('hehehehehe')
+                                        # print(last_order)
+                                        # print(idx)
                                         res['misunderstand_' + ls_feature[idx]] += [last_order[ele]] if last_order[ele] else [new_order[ele]]
                                 # res['misunderstand_' + ls_feature[idx]] = ls_res
-                                print('------------')
-                                print(res)
+                                # print('------------')
+                                # print(res)
                                 return res
                             new_order[idx] = last_order[idx]
 
@@ -187,25 +192,52 @@ def predict_message(message):
 
             print('*********')
             color, size, amount, product_name = new_order[0], new_order[1], new_order[2], new_order[3]
-            
+            print(amount)
+            print(color)
+            print(size)
+            print(product_name)
             if not product_name:
                 res['rep_order_product_name'] = [color, size, amount, product_name]
             elif not color:
-                res['rep_order_color'] = [color, size, amount, product_name]
+                suggestion = suggest_product(product_name, color, size, amount)
+                if not suggestion:
+                    res['not_found_product'] = None
+                else:
+                    res['rep_order_color'] = [color, size, amount, product_name, suggestion]
             elif not size:
-                res['rep_order_size'] = [color, size, amount, product_name]
+                suggestion = suggest_product(product_name, color, size, amount)
+                if not suggestion:
+                    res['not_found_product'] = None
+                else:
+                    res['rep_order_size'] = [color, size, amount, product_name, suggestion]
             elif not amount:
-                res['rep_order_amount'] = [color, size, amount, product_name]
+                suggestion = suggest_product(product_name, color, size, amount)
+                # print('+++++')
+                # print(product_name, color, size, amount)
+                if not suggestion:
+                    res['not_found_product'] = None
+                else:
+                    res['rep_order_amount'] = [color, size, amount, product_name, suggestion]
             else:
-                res['rep_' + intent] = [color, size, amount, product_name]
+                print('hehehehe')
+                print(amount)
+                suggestion = suggest_product(product_name, color, size, amount)
+                if not suggestion:
+                    res['not_found_product'] = None
+                else:
+                    res['rep_' + intent] = [color, size, amount, product_name]
         
         elif intent in ['request']: # request
             check_reject = get_entity_sq_from_list_pt(pattern_list['reject'], message, 'reject')
-            if conversation_history[-1] in ['rep_order', 'rep_inform'] and check_reject:
-                print('REJECT')
-                res['transfer_to_admin'] = None
-            else:
-                res['have_product_name'] = last_order
+            # print('Sao choi')
+            # print(check_reject)
+            # print(conversation_history)
+            if conversation_history:
+                if ('rep_order' in conversation_history[-1] or 'rep_inform' in conversation_history[-1]) and check_reject:
+                    print('REJECT')
+                    res['transfer_to_admin'] = None
+                else:
+                    res['have_product_name'] = last_order
         else:
             res['rep_' + intent] = None
     else:

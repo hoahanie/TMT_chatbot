@@ -369,12 +369,12 @@ module.exports = function (controller) {
         });
     }
 
-    function handleGiayTo(bot, message, body) {
-        bot.reply(message, {
-            text: "Giấy tờ cần thiết cho thủ tục này là: ",
-            giayto: body[0],
-        });
-    }
+    // function handleGiayTo(bot, message, body) {
+    //     bot.reply(message, {
+    //         text: "Giấy tờ cần thiết cho thủ tục này là: ",
+    //         giayto: body[0],
+    //     });
+    // }
 
     function handleCoQuanLinhVuc(bot, message, body) {
         bot.reply(message, {
@@ -453,7 +453,7 @@ module.exports = function (controller) {
 
     function rep_inform(bot, message, body){
         bot.reply(message, {
-            text: resp.rep_inform + body[0][2] + " " + body[0][3] + " " + body[0][0] + " " + body[0][1],
+            text: resp.rep_inform + String(body[0][2]) + " " + body[0][3] + " " + body[0][0] + " size " + body[0][1],
         });
     }
 
@@ -469,6 +469,7 @@ module.exports = function (controller) {
         });
     }
 
+    // Giong rep_inform
     function rep_connect(bot, message, body){
         bot.reply(message, {
             text: resp.rep_connect,
@@ -484,18 +485,21 @@ module.exports = function (controller) {
     function rep_order_color(bot, message, body){
         bot.reply(message, {
             text: resp.rep_order_color,
+            product_introduction: body[0],
         });
     }
 
     function rep_order_size(bot, message, body){
         bot.reply(message, {
             text: resp.rep_order_size,
+            product_introduction: body[0],
         });
     }
 
     function rep_order_amount(bot, message, body){
         bot.reply(message, {
             text: resp.rep_order_amount,
+            product_introduction: body[0],
         });
     }
 
@@ -556,6 +560,24 @@ module.exports = function (controller) {
     function misunderstand_product_name(bot, message, body) {
         bot.reply(message, {
             text: resp.misunderstand_product_name,
+        });
+    }
+
+    function not_found_product(bot, message, body) {
+        bot.reply(message, {
+            text: resp.not_found_product,
+        });
+    }
+
+    function not_found_product_from_image(bot, message, body) {
+        bot.reply(message, {
+            text: resp.not_found_product_from_image,
+        });
+    }
+
+    function found_lots_products(bot, message, body) {
+        bot.reply(message, {
+            text: resp.found_lots_products + ' ' + body[0][0],
         });
     }
 
@@ -657,9 +679,9 @@ module.exports = function (controller) {
                     case "diadiem":
                         handleDiaDiem(bot, message, body);
                         break;
-                    case "giayto":
-                        handleGiayTo(bot, message, body);
-                        break;
+                    // case "giayto":
+                    //     handleGiayTo(bot, message, body);
+                    //     break;
                     case "ketqua":
                         handleKetQua(bot, message, body);
                         break;
@@ -743,7 +765,17 @@ module.exports = function (controller) {
                     case "misunderstand_product_name":
                         misunderstand_product_name(bot, message, body);
                         break;
+                    case "not_found_product":
+                        not_found_product(bot, message, body);
+                        break;
 
+                    case "not_found_product_from_image":
+                        not_found_product_from_image(bot, message, body);
+                        break;
+
+                    case "found_lots_products":
+                        found_lots_products(bot, message, body);
+                        break;
                     default:
                         handleUnknown(bot, message, body);
                 }
