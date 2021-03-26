@@ -16,6 +16,23 @@ module.exports = {
     cs: 'Câu này hỏi về màu sắc và size',
     c: "Câu này hỏi về màu sắc",
     s: "Câu này hỏi về size",
-    n: "Không hỏi về màu sắc và size"
-    
+    n: "Không hỏi về màu sắc và size",
+    transfer_to_admin: "Rất xin lỗi vì không giúp gì được cho bạn",
+    found_id_product: "Bạn muốn mua ... ",
+    rep_hello: "Shop chào bạn ạ",
+    rep_done: "Chân thành cảm ơn quý khách đã tin tưởng đặt hàng tại shop",
+    rep_inform: "Shop xin chốt lại đơn hàng của mình nhé: ",
+    rep_request: "Shop chào bạn ạ request",
+    rep_feedback: "Shop chào bạn ạ feedback",
+    rep_connect: "Shop chào bạn ạ connect",
+    rep_order: "Cảm ơn quý khách",
+    rep_order_color: "Anh chị muốn lấy màu gì ạ ?",
+    rep_order_size: "Anh chị lấy size gì đây ạ ?",
+    rep_order_product_name: "Anh chị muốn lấy sản phẩm nào vậy ạ?",
+    rep_order_amount: "Anh chị lấy số lượng bao nhiêu ạ ?",
+    rep_changing: "Shop chào bạn ạ changing",
+    rep_return: "Shop chào bạn ạ return",
+    have_product_name: "Dạ, bên shop vẫn còn hàng nhé anh chị.",
+    dont_reg_color: "Xin lỗi, shop chưa hiểu ý anh chị ạ. Anh chị cần màu gì ?",
+    misunderstand_color: "Anh chị chốt lại là màu nào giúp shop với ạ ?"
 }

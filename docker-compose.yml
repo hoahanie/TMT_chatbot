@@ -10,7 +10,7 @@ services:
     volumes:
       - ./backend:/app
     ports:
-      - 5000:5000
+      - 5001:5000
     restart: always
 
   frontend:
@@ -24,7 +24,7 @@ services:
     environment:
       API_URL: "http://backend:5000"
     ports:
-      - 3000:3000
+      - 3001:3000
     # links:
     #   - backend
     depends_on:

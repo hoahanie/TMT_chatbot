@@ -264,10 +264,11 @@
 .tool-bar {
   height: 25px;
   width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 .tool-bar-btn{
   height: 23px !important;
-  width: 23px !important;
   margin: 0px 0px 0px 5px !important;
   padding: 0px !important;
 }
@@ -276,7 +277,15 @@
 }
 #send_btn {
   float: right;
+  width: 23px !important;
   margin-right: 5px !important;
+}
+
+#image_btn {
+  width: auto!important;
+}
+#image-label{
+  font-size: 11px;
 }
 .svg-toolbar-icon{
   height: 20px;
@@ -560,4 +569,7 @@
 .chiphi{
   table-layout: fixed;
   width: 300px;
+}
+#image-input{
+  display: none;
 }
