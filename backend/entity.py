@@ -46,11 +46,12 @@ amount_pt = r'(\d+-)*\d+\s*(' + '|'.join(amount_suf) + r')((\s({})*)|(?=[^a-z]|$
 # .format(product_pt) 
 amount_pt_2 = r'(\d+-)*\d+\s*({})'
 # .format(product_pt)
+amount_pt_3 = r'\d+'
 
 # amount_pt_4 = r'[Mm]([ôoộọ]t|ười)|[Hh]ai|[Bb](a|ốn|ảy]|[Nn]ăm|[Ss]áu|[Tt]ám|[Cc]hín'
 amount_pt_4 = r'[Hh]ai|[Mm](ột|ười)|[Bb](a|ốn|ảy)|[Nn]ăm|[Ss]áu|[Tt]ám|[Cc]hín'
 # amount_pt_4 = r'năm'
-amount_pt_sum = r'{}|{}|{}'.format(amount_pt, amount_pt_2, amount_pt_4)
+amount_pt_sum = r'{}|{}|{}|{}'.format(amount_pt, amount_pt_2, amount_pt_4, amount_pt_3)
 ###------------------------------------------
 
 ### MATERIAL_PRODUCT

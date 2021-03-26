@@ -109,6 +109,12 @@ def send_message():
         return jsonify([[],{'type': 'dont_reg_color', 'count': 0}])
     if "misunderstand_color" in result:
         return jsonify([[],{'type': 'misunderstand_color', 'count': 0}])
+    if "misunderstand_size" in result:
+        return jsonify([[],{'type': 'misunderstand_size', 'count': 0}])
+    if "misunderstand_amount" in result:
+        return jsonify([[],{'type': 'misunderstand_amount', 'count': 0}])
+    if "misunderstand_product_name" in result:
+        return jsonify([[],{'type': 'misunderstand_product_name', 'count': 0}])
     if 'nothing' in result:
         return jsonify([[],{'type': 'nothing', 'count': 0}])
 

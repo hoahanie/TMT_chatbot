@@ -113,35 +113,80 @@ def predict_message(message):
                             'rep_connect',
                             'rep_order', 'rep_order_product_name', 'rep_order_color','rep_order_size', 'rep_order_amount',
                             'have_product_name',
-                            'misunderstand_color']:
+                            'misunderstand_color',
+                            'misunderstand_size',
+                            'misunderstand_amount',
+                            'misunderstand_product_name']:
                     if ele in conversation_history[-1]:
                         last_order = conversation_history[-1][ele]
                         break
 
         if intent in ['inform','order']:
             color, size, amount, product_name = get_entity_from_message(message)
+            if size:
+                if 'xxl' in size.lower():
+                    size = 'size XXL'
+                elif 'xl' in size.lower():
+                    size = 'size XL'
+                elif 'l' in size.lower():
+                    size = 'size L'
+                elif 's' in size.lower():
+                    size = 'size S'
             
             print('**********')
-            print(color)
+            print(size)
             print(last_order)
+            new_order = [color, size, amount, product_name]
+            ls_feature = ['color', 'size', 'amount', 'product_name']
             if last_order:
-                if last_order[0]:
-                    # Consider misunderstand about color
-                    if type(last_order[0]) is not list:
-                        if color and color != last_order[0]:
-                            res['misunderstand_color'] = [[color,last_order[0]], last_order[1] if last_order[1] else size,
-                            last_order[2] if last_order[2] else amount, last_order[3] if last_order[3] else product_name]
-                            return res
-                        color = last_order[0]
-                if last_order[1]:
-                    size = last_order[1]
-                if last_order[2]:
-                    amount = last_order[2]
-                if last_order[3]:
-                    product_name = last_order[3]
+                for idx in range(len(ls_feature)):
+                    if last_order[idx]:
+                        # Consider misunderstand about ls_feature[idx]
+                        if type(last_order[idx]) is not list:
+                            if new_order[idx] and new_order[idx] != last_order[idx]:
+                                res['misunderstand_' + ls_feature[idx]] = []
+                                for ele in range(len(ls_feature)):
+                                    if ele == idx:
+                                        res['misunderstand_' + ls_feature[idx]] += [[new_order[ele], last_order[ele]]]
+                                    else:
+                                        print('hehehehehe')
+                                        print(last_order)
+                                        print(idx)
+                                        res['misunderstand_' + ls_feature[idx]] += [last_order[ele]] if last_order[ele] else [new_order[ele]]
+                                # res['misunderstand_' + ls_feature[idx]] = ls_res
+                                print('------------')
+                                print(res)
+                                return res
+                            new_order[idx] = last_order[idx]
+
+
+
+                # if last_order[0]:
+                #     # Consider misunderstand about color
+                #     if type(last_order[0]) is not list:
+                #         if color and color != last_order[0]:
+                #             res['misunderstand_color'] = [[color,last_order[0]], last_order[1] if last_order[1] else size,
+                #             last_order[2] if last_order[2] else amount, last_order[3] if last_order[3] else product_name]
+                #             return res
+                #         color = last_order[0]
+                # if last_order[1]:
+                #     # Consider misunderstand about size
+                #     if type(last_order[1]) is not list:
+                #         if size and size != last_order[1]:
+                #             res['misunderstand_size'] = [last_order[0] if last_order[0] else color, 
+                #                                         [size,last_order[1]],
+                #                                         last_order[2] if last_order[2] else amount, 
+                #                                         last_order[3] if last_order[3] else product_name]
+                #             return res
+                #         size = last_order[1]
+                # if last_order[2]:
+                #     amount = last_order[2]
+                # if last_order[3]:
+                #     product_name = last_order[3]
 
 
             print('*********')
+            color, size, amount, product_name = new_order[0], new_order[1], new_order[2], new_order[3]
             
             if not product_name:
                 res['rep_order_product_name'] = [color, size, amount, product_name]
