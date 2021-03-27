@@ -11,7 +11,6 @@ services:
       - ./backend:/app
     ports:
       - 5001:5000
-    restart: always
 
   frontend:
     container_name: chatbot_huy_frontend
@@ -29,4 +28,3 @@ services:
     #   - backend
     depends_on:
       - backend
-    restart: always
