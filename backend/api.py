@@ -80,8 +80,11 @@ def send_message():
     if "rep_hello" in result:
         return jsonify([[],{'type': 'rep_hello', 'count': 0}])
     if "rep_done" in result:
+        with codecs.open('db.json', 'w') as reader:
+            json.dump([], reader)
         return jsonify([[],{'type': 'rep_done', 'count': 0}])
     if "rep_inform" in result:
+        # Tong ket don hang
         return jsonify([result['rep_inform'],{'type': 'rep_inform', 'count': 0}])
     if "rep_request" in result:
         return jsonify([[],{'type': 'rep_request', 'count': 0}])
@@ -92,11 +95,14 @@ def send_message():
     if "rep_order" in result:
         return jsonify([result['rep_order'],{'type': 'rep_order', 'count': 0}])
     if "rep_order_color" in result:
-        return jsonify([[],{'type': 'rep_order_color', 'count': 0}])
+        # Gioi thieu nhung san pham co the
+        return jsonify([result['rep_order_color'][4],{'type': 'rep_order_color', 'count': 0}])
     if "rep_order_size" in result:
-        return jsonify([[],{'type': 'rep_order_size', 'count': 0}])
+        # Gioi thieu nhung san pham co the
+        return jsonify([result['rep_order_size'][4],{'type': 'rep_order_size', 'count': 0}])
     if "rep_order_amount" in result:
-        return jsonify([[],{'type': 'rep_order_amount', 'count': 0}])
+        # Gioi thieu nhung san pham co the
+        return jsonify([result['rep_order_amount'][4],{'type': 'rep_order_amount', 'count': 0}])
     if "rep_order_product_name" in result:
         return jsonify([[],{'type': 'rep_order_product_name', 'count': 0}])
     if "rep_changing" in result:
@@ -109,6 +115,18 @@ def send_message():
         return jsonify([[],{'type': 'dont_reg_color', 'count': 0}])
     if "misunderstand_color" in result:
         return jsonify([[],{'type': 'misunderstand_color', 'count': 0}])
+    if "misunderstand_size" in result:
+        return jsonify([[],{'type': 'misunderstand_size', 'count': 0}])
+    if "misunderstand_amount" in result:
+        return jsonify([[],{'type': 'misunderstand_amount', 'count': 0}])
+    if "misunderstand_product_name" in result:
+        return jsonify([[],{'type': 'misunderstand_product_name', 'count': 0}])
+    if "not_found_product" in result:
+        return jsonify([[],{'type': 'not_found_product', 'count': 0}])
+    if "not_found_product_from_image" in result:
+        return jsonify([[],{'type': 'not_found_product_from_image', 'count': 0}])
+    if "found_lots_products" in result:
+        return jsonify([[result['found_lots_products']],{'type': 'found_lots_products', 'count': 0}])
     if 'nothing' in result:
         return jsonify([[],{'type': 'nothing', 'count': 0}])
 

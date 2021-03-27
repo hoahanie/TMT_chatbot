@@ -478,22 +478,35 @@ var Botkit = {
         that.message_list.appendChild(that.next_line);
         that.next_line = that.createNextLine();
     },
-    renderGiayTo: function (giayto) {
+    renderProduct_Introduction: function (product_introduction) {
         var that = this;
         if (!that.next_line) {
             that.next_line = that.createNextLine();
         }
         var list_row =
-            '<tr><th class="ten">Tên</th><th class="soban">Số Bản Chính</th><th class="soban">Số Bản Sao</th><th class="tenmau">Tên Mẫu Đơn</th><th class="link">Link Download</th></tr>';
+            '<tr><th class="product_name">Tên sản phẩm</th><th class="color">Màu sắc</th><th class="s">S</th><th class="m">M</th><th class="l">L</th><th class="xl">XL</th><th class="xxl">XXL</th><th class="price">Giá tiền</th></tr>';
 
-        for (var v of giayto) {
-            list_row += `<tr><td>${v.TenGiayTo}</td><td>${
-                v.SoBanChinh ? v.SoBanChinh : "Không"
-            }</td><td>${v.SoBanSao ? v.SoBanSao : "Không"}</td><td>${
-                v.TenMauDon ? v.TenMauDon : ""
-            }</td><td><a href="${v.url ? v.url : "#"}">${
-                v.url ? "Link" : ""
-            }</a></td></tr>`;
+        for (var v of product_introduction) {
+            list_row += `<tr ><td style="width:700px">${v.product_name}</td><td>${
+                v.color ? v.color : "Chưa xác định"
+            }</td><td>${
+                v.S ? v.S : 0
+            }</td><td>${
+                v.M ? v.M : 0
+            }</td><td>${
+                v.L ? v.L : 0
+            }</td><td>${
+                v.XL ? v.XL : 0
+            }</td><td>${
+                v.XXL ? v.XXL : 0
+            }</td><td>${
+                v.price ? v.price : 0
+            }</td></tr>`;
+            
+            
+        //    <td><a href="${v.url ? v.url : "#"}">${
+        //         v.url ? "Link" : ""
+        //     }</a></td></tr>`;
         }
 
         var table = `<table class="table">${list_row}</table>`;
@@ -704,9 +717,9 @@ var Botkit = {
             if (message.choices) {
                 that.renderMessage(message);
                 that.renderOptions(message.choices);
-            } else if (message.giayto) {
+            } else if (message.product_introduction) {
                 that.renderMessage(message);
-                that.renderGiayTo(message.giayto);
+                that.renderProduct_Introduction(message.product_introduction);
             } else if (message.chiphi) {
                 that.renderMessage(message);
                 that.renderChiPhi(message.chiphi);

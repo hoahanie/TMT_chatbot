@@ -654,6 +654,15 @@ table {
   margin: 5px 5px 5px 0px;
   width: 100%;
 }
+
+.table td, .table th {
+  padding: 4px;
+  vertical-align: top;
+  border-top: 1px solid #dee2e6;
+  font-size: 8px;
+  text-align: center;
+}
+
 th {
   border: 1px solid rgb(206, 205, 205);
   text-align: center;

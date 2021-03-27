@@ -12,8 +12,13 @@ MODELS_PATH = path.join(
     'backend/entity_data'
 )
 
+### PRODUCT_NAME
+# product_pt = '[á|a]o|qu[a|ầ]n|v[a|á]y|đầm|dam|t[ú|u]i|n[ó|o]n|mũ|kho[a|á]c'
+df_products = pd.read_csv(path.join(MODELS_PATH, 'product_name.csv'), header=None)
+product_names = df_products[0].tolist()
+product_pt = '|'.join(product_names)
+
 ### COMMON
-product_pt = '[á|a]o|qu[a|ầ]n|v[a|á]y|đầm|dam|t[ú|u]i|n[ó|o]n|mũ|kho[a|á]c'
 df_amount_suf = pd.read_csv(path.join(MODELS_PATH, 'amount_suf.csv'), header = None)
 amount_suf = df_amount_suf[0].tolist()
 pt_amount_suf = '|'.join(amount_suf)
@@ -44,11 +49,12 @@ amount_pt = r'(\d+-)*\d+\s*(' + '|'.join(amount_suf) + r')((\s({})*)|(?=[^a-z]|$
 # .format(product_pt) 
 amount_pt_2 = r'(\d+-)*\d+\s*({})'
 # .format(product_pt)
+amount_pt_3 = r'\d+'
 
 # amount_pt_4 = r'[Mm]([ôoộọ]t|ười)|[Hh]ai|[Bb](a|ốn|ảy]|[Nn]ăm|[Ss]áu|[Tt]ám|[Cc]hín'
 amount_pt_4 = r'[Hh]ai|[Mm](ột|ười)|[Bb](a|ốn|ảy)|[Nn]ăm|[Ss]áu|[Tt]ám|[Cc]hín'
 # amount_pt_4 = r'năm'
-amount_pt_sum = r'{}|{}|{}'.format(amount_pt, amount_pt_2, amount_pt_4)
+amount_pt_sum = r'{}|{}|{}|{}'.format(amount_pt, amount_pt_2, amount_pt_4, amount_pt_3)
 ###------------------------------------------
 
 ### MATERIAL_PRODUCT
@@ -75,7 +81,7 @@ pt_size = r'{}|{}|{}'.format(pt_size_1, pt_size_2, pt_size_3)
 list_entity_using_regex = ['phone', 'weight customer', 'height customer', 
                             'size', 'color_product',
                             'amount_product', 'material_product', 'product_name',
-                            'reject'
+                            'reject', 'number'
                         ]
 pattern_list = {
     'phone': [
@@ -111,6 +117,9 @@ pattern_list = {
     ],
     'reject':[
         r'[kK]|[kK][hH]|[kK][oO]|[kKhH]h[ôo]ng|[nN][oO]|[Ss][aA][Ii]'
+    ],
+    'number':[
+        r'[0-9]+'
     ]
 }
 
@@ -251,6 +260,6 @@ if __name__ == "__main__":
     print(MODELS_PATH)
     # print(label_entity("mình đặt 1 cái áo size S màu đỏ"))
     # print(get_entity_sq_from_list_pt(pattern_list, "mình đặt 1 cái áo size S màu đỏ", "color_product"))
-    print(get_entity_sq_from_list_pt(pattern_list['amount_product'], 'sáu cái nha', 'amount_product'))
-    string = 'hai cái nha'
-    print(string[0:4])
+    print(get_entity_sq_from_list_pt(pattern_list['number'], '10 cái', 'number'))
+    string = '10 cái'
+    print(int('10'))
