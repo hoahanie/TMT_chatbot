@@ -7,10 +7,7 @@ BASEDIR = path.dirname(path.dirname(path.dirname(path.dirname(path.abspath(__fil
 # BASEDIR = 'D:\\GitHub\\VnCoreNLP'
 vncorenlp_file = path.join(BASEDIR,path.join('VnCoreNLP','VnCoreNLP-1.1.1.jar'))
 
-MODELS_PATH = path.join(
-    path.dirname(path.dirname(path.abspath(__file__))),
-    'backend/entity_data'
-)
+MODELS_PATH = "./entity_data"
 
 ### PRODUCT_NAME
 # product_pt = '[á|a]o|qu[a|ầ]n|v[a|á]y|đầm|dam|t[ú|u]i|n[ó|o]n|mũ|kho[a|á]c'
