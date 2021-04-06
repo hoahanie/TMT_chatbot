@@ -47,7 +47,7 @@ def catch_image(products):
             if not suggestion:
                 res['not_found_product'] = None
             else:
-                res['rep_order_color'] = ['', '', '', product_names[0], suggestion] 
+                res['rep_order_color'] = {'color': '','size': '','amount': '','product_name': product_names[0],'suggestion': suggestion}
         else:
             # ['a','b','c'] -> 'a, b, c'
             product_string = reduce(lambda x,y: x+' hay là '+y, product_names[1:],product_names[0])
@@ -103,7 +103,7 @@ def predict_message(message):
     if intent >= 0 and intent <= 8:
         intent = intent_list[intent]
 
-        last_order = []
+        last_order = {}
         if conversation_history:
                 for ele in ['found_id_product',
                             'rep_hello',
@@ -145,49 +145,28 @@ def predict_message(message):
             ls_feature = ['color', 'size', 'amount', 'product_name']
             if last_order:
                 for idx in range(len(ls_feature)):
-                    if last_order[idx]:
+                    if last_order[ls_feature[idx]]:
                         # Consider misunderstand about ls_feature[idx]
-                        if type(last_order[idx]) is not list:
-                            if new_order[idx] and new_order[idx] != last_order[idx]:
-                                res['misunderstand_' + ls_feature[idx]] = []
+                        if type(last_order[ls_feature[idx]]) is not list:
+                            if new_order[idx] and new_order[idx] != last_order[ls_feature[idx]]:
+                                res['misunderstand_' + ls_feature[idx]] = {}
                                 for ele in range(len(ls_feature)):
                                     if ele == idx:
-                                        res['misunderstand_' + ls_feature[idx]] += [[new_order[ele], last_order[ele]]]
+                                        res['misunderstand_' + ls_feature[idx]][ls_feature[ele]] = [new_order[ele], last_order[ls_feature[ele]]]
                                     else:
                                         # print('hehehehehe')
                                         # print(last_order)
                                         # print(idx)
-                                        res['misunderstand_' + ls_feature[idx]] += [last_order[ele]] if last_order[ele] else [new_order[ele]]
+                                        res['misunderstand_' + ls_feature[idx]][ls_feature[ele]] = last_order[ls_feature[ele]] if last_order[ls_feature[ele]] else new_order[ele]
                                 # res['misunderstand_' + ls_feature[idx]] = ls_res
                                 # print('------------')
                                 # print(res)
                                 return res
-                            new_order[idx] = last_order[idx]
+                            new_order[idx] = last_order[ls_feature[idx]]
 
 
 
-                # if last_order[0]:
-                #     # Consider misunderstand about color
-                #     if type(last_order[0]) is not list:
-                #         if color and color != last_order[0]:
-                #             res['misunderstand_color'] = [[color,last_order[0]], last_order[1] if last_order[1] else size,
-                #             last_order[2] if last_order[2] else amount, last_order[3] if last_order[3] else product_name]
-                #             return res
-                #         color = last_order[0]
-                # if last_order[1]:
-                #     # Consider misunderstand about size
-                #     if type(last_order[1]) is not list:
-                #         if size and size != last_order[1]:
-                #             res['misunderstand_size'] = [last_order[0] if last_order[0] else color, 
-                #                                         [size,last_order[1]],
-                #                                         last_order[2] if last_order[2] else amount, 
-                #                                         last_order[3] if last_order[3] else product_name]
-                #             return res
-                #         size = last_order[1]
-                # if last_order[2]:
-                #     amount = last_order[2]
-                # if last_order[3]:
-                #     product_name = last_order[3]
+            
 
 
             print('*********')
@@ -197,19 +176,19 @@ def predict_message(message):
             print(size)
             print(product_name)
             if not product_name:
-                res['rep_order_product_name'] = [color, size, amount, product_name]
+                res['rep_order_product_name'] = {'color': color,'size': size,'amount': amount,'product_name': product_name}
             elif not color:
                 suggestion = suggest_product(product_name, color, size, amount)
                 if not suggestion:
                     res['not_found_product'] = None
                 else:
-                    res['rep_order_color'] = [color, size, amount, product_name, suggestion]
+                    res['rep_order_color'] = {'color':color,'size': size,'amount': amount,'product_name': product_name,'suggestion': suggestion}
             elif not size:
                 suggestion = suggest_product(product_name, color, size, amount)
                 if not suggestion:
                     res['not_found_product'] = None
                 else:
-                    res['rep_order_size'] = [color, size, amount, product_name, suggestion]
+                    res['rep_order_size'] = {'color':color,'size': size,'amount': amount,'product_name': product_name,'suggestion': suggestion}
             elif not amount:
                 suggestion = suggest_product(product_name, color, size, amount)
                 # print('+++++')
@@ -217,7 +196,7 @@ def predict_message(message):
                 if not suggestion:
                     res['not_found_product'] = None
                 else:
-                    res['rep_order_amount'] = [color, size, amount, product_name, suggestion]
+                    res['rep_order_amount'] = {'color':color,'size': size,'amount': amount,'product_name': product_name,'suggestion': suggestion}
             else:
                 print('hehehehe')
                 print(amount)
@@ -225,7 +204,7 @@ def predict_message(message):
                 if not suggestion:
                     res['not_found_product'] = None
                 else:
-                    res['rep_' + intent] = [color, size, amount, product_name]
+                    res['rep_' + intent] = {'color':color,'size': size,'amount': amount,'product_name': product_name}
         
         elif intent in ['request']: # request
             check_reject = get_entity_sq_from_list_pt(pattern_list['reject'], message, 'reject')

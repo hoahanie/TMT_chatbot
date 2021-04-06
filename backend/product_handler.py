@@ -1,5 +1,14 @@
 import pymongo
 import re
+from os import path
+import pandas as pd
+
+MODELS_PATH = path.join(
+    path.dirname(path.dirname(path.abspath(__file__))),
+    'backend/entity_data'
+)
+
+
 # from entity import get_entity_sq_from_list_pt, pattern_list
 # myclient = pymongo.MongoClient("mongodb://localhost:27017/")
 myclient = pymongo.MongoClient("mongodb+srv://chatbot:tmtchatbot@cluster0.jj9cp.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
@@ -44,3 +53,10 @@ def suggest_product(name, color, size, amount):
 
 # print(int(amount_to_int('10 cái')))
 # print(x[0][0])
+
+def show_product():
+    df_products = pd.read_csv(path.join(MODELS_PATH, 'product_name.csv'), header=None)
+    ls_product = df_products[0].tolist()
+    return ls_product if len(ls_product) <= 5 else ls_product[:5]
+
+# print(show_product())

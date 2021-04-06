@@ -31,6 +31,19 @@ module.exports = function (controller) {
         return true;
     }
 
+    function store_conversation(id, body, message_text, reply_text){
+        data = {}
+        // console.log(body[0]);
+        // console.log(body[0][0]);
+        data['userId'] = id;
+        data['datetime'] = new Date();
+        data['last_conversation'] = {'type': body[1].type, 'inform_slots': body[0]};
+        data['message_text'] = message_text;
+        data['reply_text'] = {'bot': reply_text, 'admin': ''};
+        console.log('********');
+        console.log(data);
+    }
+
     function conductOnboarding(bot, message) {
         bot.startConversation(message, function (err, convo) {
             var id = message.user;
@@ -122,351 +135,75 @@ module.exports = function (controller) {
         }, 1000);
     }
 
-    function handleDoneResponse(bot, message, body) {
-        bot.reply(message, {
-            text: resp.thank,
-            intent: body.agent_action.intent,
-        });
-    }
-    function handleHelloResponse(bot, message, body) {
-        bot.reply(message, {
-            text: body.message,
-            isAbleToSuggest: true,
-        });
-    }
-    function handleNonameResponse(bot, message, body) {
-        if (currentRound - previousNonameRound == 1) {
-            nonameStreak += 1;
-        } else {
-            nonameStreak = 0;
-        }
-        previousNonameRound = currentRound;
-        var text = body.message;
-        if (nonameStreak > 2) {
-            text =
-                "Có vẻ như có vấn đề với tên hoạt động mà bạn cung cấp. Vui lòng kiểm tra lại chính xác tên hoặc thử hỏi cách khác bạn nhé!";
-            nonameStreak = 0;
-        }
-        bot.reply(message, {
-            text: text,
-            isAbleToSuggest: true,
-        });
-    }
-    function handleMatchfoundResponse(bot, message, body) {
-        var matchFoundSlot = "activity";
-        var enableResponseToMathfound = null;
-        var enableEditInform = null;
-        var listResults = null;
-        if (
-            body.agent_action.inform_slots[matchFoundSlot] !=
-            "no match available"
-        ) {
-            keyListResults = body.agent_action.inform_slots[matchFoundSlot];
-            listResults = body.agent_action.inform_slots[keyListResults];
-            enableResponseToMathfound = [
-                {
-                    title: "Cảm ơn",
-                    payload: {
-                        userResponeToMatchfound: {
-                            acceptMatchfound: true,
-                            userAction: body.agent_action,
-                        },
-                    },
-                },
-                {
-                    title: "Không thỏa mãn",
-                    payload: {
-                        userResponeToMatchfound: {
-                            acceptMatchfound: false,
-                            userAction: body.agent_action,
-                        },
-                    },
-                },
-            ];
-        } else {
-            enableEditInform = body.current_informs;
-        }
-        bot.reply(message, {
-            text: body.message,
-            enableResponseToMathfound: enableResponseToMathfound,
-            listResults: listResults,
-            enableEditInform: enableEditInform,
-        });
-    }
-    function handleInformResponse(bot, message, body) {
-        var slot = Object.keys(body.agent_action.inform_slots)[0];
-        var enableResponseToConfirm = null;
-        var enableEditInform = null;
-        // handle show current results send from server
-        if (
-            "current_results" in body &&
-            body.current_results.length > 0 &&
-            body.agent_action.round > 2
-        ) {
-            var enableResponseToCurrentResults = [
-                {
-                    title: "Đã thỏa mãn",
-                    payload: {
-                        userResponeToMatchfound: {
-                            acceptMatchfound: true,
-                            userAction: null,
-                        },
-                    },
-                },
-                {
-                    title: "Chưa, tiếp tục tư vấn",
-                    payload: {
-                        continueToConversation: {
-                            message: body.message,
-                            agent_action: body.agent_action,
-                            current_informs: body.current_informs,
-                        },
-                    },
-                },
-            ];
-            bot.reply(message, {
-                text:
-                    "Đây là thông tin mình tìm được theo yêu cầu hiện tại của bạn",
-                listResults: body.current_results,
-                enableResponseToCurrentResults: enableResponseToCurrentResults,
-            });
-            return;
-        } else if (
-            body.agent_action.inform_slots[slot] != "no match available"
-        ) {
-            if (body.agent_action.inform_slots[slot].length == 0) {
-                var enableEditInformWhenDenied = null;
-                if (body.current_informs != "null")
-                    enableEditInformWhenDenied = body.current_informs;
-                enableResponseToConfirm = [
-                    {
-                        title: "Đồng ý",
-                        payload: {
-                            userResponeToInform: {
-                                anything: true,
-                                userAction: body.agent_action,
-                            },
-                        },
-                    },
-                    {
-                        title: "Không",
-                        payload: {
-                            userResponeToInform: {
-                                acceptInform: false,
-                                enableEditInform: enableEditInformWhenDenied,
-                                userAction: body.agent_action,
-                            },
-                        },
-                    },
-                ];
-            } else {
-                enableResponseToConfirm = [
-                    {
-                        title: "Đồng ý",
-                        payload: {
-                            userResponeToInform: {
-                                acceptInform: true,
-                                userAction: body.agent_action,
-                            },
-                        },
-                    },
-                    {
-                        title: "Sao cũng được",
-                        payload: {
-                            userResponeToInform: {
-                                anything: true,
-                                userAction: body.agent_action,
-                            },
-                        },
-                    },
-                    {
-                        title: "Không",
-                        payload: {
-                            userResponeToInform: {
-                                acceptInform: false,
-                                userAction: body.agent_action,
-                            },
-                        },
-                    },
-                ];
-            }
-
-            console.log("RESPONSE CONFIRM");
-        } else {
-            if (body.current_informs != "null")
-                enableEditInform = body.current_informs;
-        }
-        bot.reply(message, {
-            text: body.message,
-            enableResponseToConfirm: enableResponseToConfirm,
-            enableEditInform: enableEditInform,
-        });
-    }
-
-    function handleListTTHC(bot, message, body) {
-        console.log(body[0]);
-        bot.reply(message, {
-            text: `Tìm thấy các thủ tục liên quan sau. Xin chọn một thủ tục bạn muốn.`,
-            choices: body[0].map((e) => {
-                return { key: e.MaTTHC, value: e.TenTTHC };
-            }),
-        });
-    }
-
-    function handleSearch(bot, message, body) {
-        bot.reply(message, {
-            type: "option",
-            text: `Tìm thấy ${body.data.count} thủ tục liên quan đến ${body.data.name}. Bạn có muốn xem tất cả?`,
-            choices: [
-                { key: "1", value: "có" },
-                { key: "2", value: "không" },
-            ],
-        });
-    }
-
-    function handleDiaDiem(bot, message, body) {
-        bot.reply(message, {
-            text:
-                "Địa điểm làm thủ tục này là: " + body[0][0].DiaChiTiepNha
-                    ? body[0][0].DiaChiTiepNhan
-                    : "Không có",
-        });
-    }
-
-    function handleChiPhi(bot, message, body) {
-        if (body[0].length == 0) {
-            bot.reply(message, {
-                text: "Thủ tục này không mất phí",
-            });
-        } else {
-            bot.reply(message, {
-                text: resp.chiphi[0],
-                chiphi: body[0],
-            });
-        }
-    }
-
-    function handleThoiGian(bot, message, body) {
-        value = body[0][0] ? body[0][0] : null;
-        bot.reply(message, {
-            text: "Thời gian thực hiện thủ tục là: ",
-            thoigian: value,
-        });
-    }
-
-    function handleKetQua(bot, message, body) {
-        bot.reply(message, {
-            text: `Bạn sẽ nhận được: ${
-                body[0][0].TenKetQua ? body[0][0].TenKetQua : "Không"
-            }`,
-        });
-    }
-
-    function handleThucHien(bot, message, body) {
-        bot.reply(message, {
-            text: "Quy trình thực hiện là",
-            thuchien: body[0],
-        });
-    }
-
-    // function handleGiayTo(bot, message, body) {
+    // function color_size(bot, message, body) {
     //     bot.reply(message, {
-    //         text: "Giấy tờ cần thiết cho thủ tục này là: ",
-    //         giayto: body[0],
+    //         text: resp.cs,
     //     });
     // }
-
-    function handleCoQuanLinhVuc(bot, message, body) {
-        bot.reply(message, {
-            text: `Cơ quan này xử lí ${
-                body[1].count
-            } thủ tục trong các lĩnh vực : ${body[0]
-                .map((e) => e.TenLinhVuc)
-                .join(", ")}. Bạn muốn hỏi cụ thể lĩnh vực nào?`,
-        });
-    }
-
-    function handleCoQuan(bot, message, body) {
-        bot.reply(message, {
-            text: `Cơ quan này xử lí những thủ tục sau: `,
-            choices: body[0].map((e) => {
-                return { key: e.MaTTHC, value: e.TenTTHC };
-            }),
-        });
-    }
-
-    function handleLinhVuc(bot, message, body) {
-        bot.reply(message, {
-            text: `Lĩnh vực này gồm những thủ tục sau: `,
-            choices: body[0].map((e) => {
-                return { key: e.MaTTHC, value: e.TenTTHC };
-            }),
-        });
-    }
-    // function shopping_True(bot, message, body){
+    // function color(bot, message, body) {
     //     bot.reply(message, {
-    //         text: resp.True,
+    //         text: resp.c,
     //     });
     // }
-    // function shopping_False(bot, message, body){
+    // function size(bot, message, body) {
     //     bot.reply(message, {
-    //         text: resp.False,
+    //         text: resp.s,
     //     });
     // }
-    function color_size(bot, message, body) {
-        bot.reply(message, {
-            text: resp.cs,
-        });
-    }
-    function color(bot, message, body) {
-        bot.reply(message, {
-            text: resp.c,
-        });
-    }
-    function size(bot, message, body) {
-        bot.reply(message, {
-            text: resp.s,
-        });
-    }
     function transfer_to_admin(bot, message, body) {
         bot.reply(message, {
             text: resp.transfer_to_admin,
         });
+        reply_text = resp.transfer_to_admin;
+        store_conversation(message.user, body, message.text, reply_text);
+        
     }
     function found_id_product(bot, message, body) {
         bot.reply(message, {
             text: resp.found_id_product + body[0]['product_name'],
         });
+        reply_text = resp.found_id_product + body[0]['product_name'];
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     function rep_hello(bot, message, body){
+        reply_text = resp.rep_hello;
         bot.reply(message, {
             text: resp.rep_hello,
         });
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     function rep_done(bot, message, body){
         bot.reply(message, {
             text: resp.rep_done,
         });
+        reply_text = resp.rep_done;
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     function rep_inform(bot, message, body){
+        reply_text = resp.rep_inform + String(body[0]['amount']) + " " + body[0]['product_name'] + " " + body[0]['color'] + " size " + body[0]['size'];
         bot.reply(message, {
-            text: resp.rep_inform + String(body[0][2]) + " " + body[0][3] + " " + body[0][0] + " size " + body[0][1],
+            text: reply_text,
         });
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     function rep_request(bot, message, body){
         bot.reply(message, {
             text: resp.rep_request,
         });
+        reply_text = resp.rep_request;
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     function rep_feedback(bot, message, body){
         bot.reply(message, {
             text: resp.rep_feedback,
         });
+        reply_text = resp.rep_feedback;
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     // Giong rep_inform
@@ -474,6 +211,8 @@ module.exports = function (controller) {
         bot.reply(message, {
             text: resp.rep_connect,
         });
+        reply_text = resp.rep_connect;
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     function rep_order(bot, message, body){
@@ -483,48 +222,62 @@ module.exports = function (controller) {
     }
 
     function rep_order_color(bot, message, body){
+        reply_text = resp.rep_order_color;
         bot.reply(message, {
             text: resp.rep_order_color,
-            product_introduction: body[0],
+            product_introduction: body[0]['suggestion'],
         });
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     function rep_order_size(bot, message, body){
         bot.reply(message, {
             text: resp.rep_order_size,
-            product_introduction: body[0],
+            product_introduction: body[0]['suggestion'],
         });
+        reply_text = resp.rep_order_size;
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     function rep_order_amount(bot, message, body){
         bot.reply(message, {
             text: resp.rep_order_amount,
-            product_introduction: body[0],
+            product_introduction: body[0]['suggestion'],
         });
+        reply_text = resp.rep_order_amount;
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     function rep_order_product_name(bot, message, body){
         bot.reply(message, {
             text: resp.rep_order_product_name,
         });
+        reply_text = resp.rep_order_product_name;
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     function rep_changing(bot, message, body){
         bot.reply(message, {
             text: resp.rep_changing,
         });
+        reply_text = resp.rep_changing;
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     function rep_return(bot, message, body){
         bot.reply(message, {
             text: resp.rep_return,
         });
+        reply_text = resp.rep_return;
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     function have_product_name(bot, message, body){
         bot.reply(message, {
             text: resp.have_product_name,
         });
+        reply_text = resp.have_product_name;
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     function nothing(bot, message, body) {
@@ -537,48 +290,64 @@ module.exports = function (controller) {
         bot.reply(message, {
             text: resp.dont_reg_color,
         });
+        reply_text = resp.dont_reg_color;
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     function misunderstand_color(bot, message, body) {
         bot.reply(message, {
             text: resp.misunderstand_color,
         });
+        reply_text = resp.misunderstand_color;
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     function misunderstand_size(bot, message, body) {
         bot.reply(message, {
             text: resp.misunderstand_size,
         });
+        reply_text = resp.misunderstand_size;
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     function misunderstand_amount(bot, message, body) {
         bot.reply(message, {
             text: resp.misunderstand_amount,
         });
+        reply_text = resp.misunderstand_amount;
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     function misunderstand_product_name(bot, message, body) {
         bot.reply(message, {
             text: resp.misunderstand_product_name,
         });
+        reply_text = resp.misunderstand_product_name;
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     function not_found_product(bot, message, body) {
         bot.reply(message, {
             text: resp.not_found_product,
         });
+        reply_text = resp.not_found_product;
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     function not_found_product_from_image(bot, message, body) {
         bot.reply(message, {
             text: resp.not_found_product_from_image,
         });
+        reply_text = resp.not_found_product_from_image;
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     function found_lots_products(bot, message, body) {
         bot.reply(message, {
             text: resp.found_lots_products + ' ' + body[0][0],
         });
+        reply_text = resp.found_lots_products;
+        store_conversation(message.user, body, message.text, reply_text);
     }
 
     function handleUnknown(bot, message, body) {
@@ -618,25 +387,14 @@ module.exports = function (controller) {
             });
             return;
         }
-        if (message.type === "confirm") {
-            bot.reply(message, {
-                text: `bạn muốn hỏi gì về  ${message.name}?`,
-            });
-        }
-        console.log(message);
-        if (message.tthc_name) {
-            bot.reply(message, {
-                text: `Bạn đã chọn thủ tục: ${message.tthc_name}. Bạn muốn hỏi gì về thủ tục này?`,
-            });
-            return;
-        }
         request.post(
             CONVERSATION_MANAGER_ENDPOINT,
             {
                 json: {
                     message: message.text,
                     image: message.image,
-                    state: message.tthc_id ? message.tthc_id : "not_found",
+                    // state: message.tthc_id ? message.tthc_id : "not_found",
+                    userId: id,
                 },
             },
             (error, res, body) => {
@@ -652,42 +410,6 @@ module.exports = function (controller) {
                 }
                 console.log(message.user)
                 switch (body[1].type) {
-                    case "True":
-                        shopping_True(bot, message, body);
-                        break;
-                    case "False":
-                        shopping_False(bot, message, body);
-                        break;
-                    case "tentthc":
-                        handleListTTHC(bot, message, body);
-                        break;
-                    case "coquan_linhvuc":
-                        handleCoQuanLinhVuc(bot, message, body);
-                        break;
-                    case "coquan":
-                        handleCoQuan(bot, message, body);
-                        break;
-                    case "linhvuc":
-                        handleLinhVuc(bot, message, body);
-                        break;
-                    case "thoigian":
-                        handleThoiGian(bot, message, body);
-                        break;
-                    case "chiphi":
-                        handleChiPhi(bot, message, body);
-                        break;
-                    case "diadiem":
-                        handleDiaDiem(bot, message, body);
-                        break;
-                    // case "giayto":
-                    //     handleGiayTo(bot, message, body);
-                    //     break;
-                    case "ketqua":
-                        handleKetQua(bot, message, body);
-                        break;
-                    case "thuchien":
-                        handleThucHien(bot, message, body);
-                        break;
                     case "color_size":
                         color_size(bot, message, body);
                         break;

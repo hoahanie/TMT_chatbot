@@ -31,7 +31,7 @@ def send_message():
         conversation_history = json.loads(json_data.read())
     print(conversation_history)
     
-    # print(input_data)
+    print(input_data['userId'])
     if "message" not in input_data.keys():
         return msg(400, "Message cannot be None")
     else:
@@ -96,13 +96,13 @@ def send_message():
         return jsonify([result['rep_order'],{'type': 'rep_order', 'count': 0}])
     if "rep_order_color" in result:
         # Gioi thieu nhung san pham co the
-        return jsonify([result['rep_order_color'][4],{'type': 'rep_order_color', 'count': 0}])
+        return jsonify([result['rep_order_color'],{'type': 'rep_order_color', 'count': 0}])
     if "rep_order_size" in result:
         # Gioi thieu nhung san pham co the
-        return jsonify([result['rep_order_size'][4],{'type': 'rep_order_size', 'count': 0}])
+        return jsonify([result['rep_order_size'],{'type': 'rep_order_size', 'count': 0}])
     if "rep_order_amount" in result:
         # Gioi thieu nhung san pham co the
-        return jsonify([result['rep_order_amount'][4],{'type': 'rep_order_amount', 'count': 0}])
+        return jsonify([result['rep_order_amount'],{'type': 'rep_order_amount', 'count': 0}])
     if "rep_order_product_name" in result:
         return jsonify([[],{'type': 'rep_order_product_name', 'count': 0}])
     if "rep_changing" in result:
