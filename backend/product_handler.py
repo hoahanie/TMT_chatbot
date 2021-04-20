@@ -12,8 +12,8 @@ MODELS_PATH = path.join(
 # from entity import get_entity_sq_from_list_pt, pattern_list
 # myclient = pymongo.MongoClient("mongodb://localhost:27017/")
 myclient = pymongo.MongoClient("mongodb+srv://chatbot:tmtchatbot@cluster0.jj9cp.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
-mydb = myclient["test_shopping_data"]
-mycol = mydb["test_shopping_data"]
+mydb = myclient["shopping_data"]
+mycol = mydb["Hume"]
 
 # mydoc = mycol.find().sort("product_name")
         
@@ -33,7 +33,7 @@ def suggest_product(name, color, size, amount):
     if size and amount:
         # amount = amount_to_int(amount)
         myquery[size] = { "$gte" : amount}
-    # print(myquery)
+    print(myquery)
     
     myresult = [{i:ele[i] for i in ele if i!='_id'} for ele in mycol.find(myquery)]
     return myresult if len(myresult) <= 5 else myresult[:5]
@@ -48,7 +48,7 @@ def suggest_product(name, color, size, amount):
 
 # def suggest_product_from_color(name, color):
     
-# print(suggest_product('áo sơ mi nữ', 'đỏ', 'M', '30'))
+# print(suggest_product('set vàng', 'vàng', '', ''))
     
 
 # print(int(amount_to_int('10 cái')))

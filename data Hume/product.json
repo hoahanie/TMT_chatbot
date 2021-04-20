@@ -1,0 +1,191 @@
+[
+    {
+        "product_name": "Set Xanh",
+        "product_ID": "S002",
+        "color": "Xanh, Nude, Cam",
+        "product_material": "cotton mịn, vải mềm, không nhăn, 2 lớp dày dặn",
+        "S": 100,
+        "M": 100,
+        "L": 100
+    },
+    {
+        "product_name": "Set Vest nơ",
+        "product_ID": "D005",
+        "color": "Đen",
+        "product_material": "cotton lạnh, không nhăn, vải nhanh khô, mát lạnh, mịn như lụa",
+        "S": 100,
+        "M": 100,
+        "L": 100
+    },
+    {
+        "product_name": "Set vest",
+        "product_ID": "D0006",
+        "color": "Đen, Nude",
+        "product_material": "cotton lạnh, không nhăn, vải nhanh khô",
+        "S": 100,
+        "M": 100,
+        "L": 100
+    },
+    {
+        "product_name": "Set vàng",
+        "product_ID": "S006",
+        "color": "Vàng",
+        "product_material": "chéo ý, vải mềm, mát lạnh, không nhăn",
+        "S": 100,
+        "M": 100,
+        "L": 100
+    },
+    {
+        "product_name": "Đầm nâu nút",
+        "product_ID": "D0016",
+        "color": "Nâu, Xám",
+        "product_material": "lụa hàn, mềm mịn, không nhăn, không đổ lông, mát lạnh",
+        "S": 100,
+        "M": 100,
+        "L": 100
+    },
+    {
+        "product_name": "Set trắng nút",
+        "product_ID": "S009",
+        "color": "Trắng",
+        "product_material": "cotton gân, không nhăn, thoải mái, mát mịn",
+        "S": 100,
+        "M": 100,
+        "L": 100
+    },
+    {
+        "product_name": "Set sơ mi cổ nơ",
+        "product_ID": "S005",
+        "color": "Trắng",
+        "product_material": "chéo ý, vải mềm, mát lạnh, không nhăn",
+        "S": 100,
+        "M": 100,
+        "L": 100
+    },
+    {
+        "product_name": "Set hồng vest váy ngắn",
+        "product_ID": "S003",
+        "color": "Hồng",
+        "product_material": "karo bố, dày dặn, giữ màu tốt, mát lạnh, vải mềm",
+        "S": 100,
+        "M": 100,
+        "L": 100
+    },
+    {
+        "product_name": "Set đen sẻ",
+        "product_ID": "S008",
+        "color": "Đen",
+        "product_material": "kim tuyến hàn, không nhăn, dày dặn, rất thoải mái",
+        "S": 100,
+        "M": 100,
+        "L": 100
+    },
+    {
+        "product_name": "Set đầm sơ mi trắng",
+        "product_ID": "S004",
+        "color": "Trắng",
+        "product_material": "cotton lạnh loại đẹp, vải nhanh khô, không đổ lông, mát lạnh, vải mềm",
+        "S": 100,
+        "M": 100,
+        "L": 100
+    },
+    {
+        "product_name": "Set cổ xéo",
+        "product_ID": "DS001",
+        "color": "Trắng",
+        "product_material": "chéo ý, vải mềm, mát lạnh, không nhăn",
+        "S": 100,
+        "M": 100,
+        "L": 100
+    },
+    {
+        "product_name": "Đầm nude lưới",
+        "product_ID": "D0015",
+        "color": "Nude",
+        "product_material": "cotton lạnh, không nhăn, vải nhanh khô, tính thẩm mĩ cao",
+        "S": 100,
+        "M": 100,
+        "L": 100
+    },
+    {
+        "product_name": "Đầm trắng dập li",
+        "product_ID": "D008",
+        "color": "Trắng",
+        "product_material": "chéo ý 2 lớp, không nhăn, mát mịn, dày dặn",
+        "S": 100,
+        "M": 100,
+        "L": 100
+    },
+    {
+        "product_name": "Đầm trắng 2 dây",
+        "product_ID": "D0010",
+        "color": "Trắng",
+        "product_material": "cotton hàn, mềm mịn, mát lạnh, không đổ lông, không nhăn",
+        "S": 100,
+        "M": 100,
+        "L": 100
+    },
+    {
+        "product_name": "Đầm nude xoắn",
+        "product_ID": "D0012",
+        "color": "Nude",
+        "product_material": "cotton thái, mềm mịn, dày dặn, co giãn nhẹ, không đổ lông",
+        "S": 100,
+        "M": 100,
+        "L": 100
+    },
+    {
+        "product_name": "Đầm caro cổ vest",
+        "product_ID": "D0011",
+        "color": "Xanh",
+        "product_material": "karo bố, vải mềm, dày dặn, giữ màu tốt, không nhăn, không đổ lông",
+        "S": 100,
+        "M": 100,
+        "L": 100
+    },
+    {
+        "product_name": "Đầm caro",
+        "product_ID": "D009",
+        "color": "Xanh",
+        "product_material": "karo bố thun, giữ màu tốt, vải mềm, không đổ lông",
+        "S": 100,
+        "M": 100,
+        "L": 100
+    },
+    {
+        "product_name": "Đầm body vest",
+        "product_ID": "D0013",
+        "color": "Hông",
+        "product_material": "karo bố, dày dặn, giữ màu tốt, mát lạnh, vải mềm",
+        "S": 100,
+        "M": 100,
+        "L": 100
+    },
+    {
+        "product_name": "Đầm body nút",
+        "product_ID": "D0017",
+        "color": "Da",
+        "product_material": "lụa hàn, mềm mịn, không nhăn, không đổ lông, mát lạnh",
+        "S": 100,
+        "M": 100,
+        "L": 100
+    },
+    {
+        "product_name": "Đầm body nude ren",
+        "product_ID": "D0014",
+        "color": "Nude",
+        "product_material": "cotton hàn, mềm mịn, dày dặn, không đổ lông",
+        "S": 100,
+        "M": 100,
+        "L": 100
+    },
+    {
+        "product_name": "Đầm body lưới",
+        "product_ID": "D004",
+        "color": "Đen",
+        "product_material": "thun mĩ phối voan, mềm mại, mịn màn, mát dịu, vải mềm",
+        "S": 100,
+        "M": 100,
+        "L": 100
+    }
+]

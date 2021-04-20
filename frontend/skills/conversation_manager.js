@@ -183,7 +183,14 @@ module.exports = function (controller) {
     }
 
     function rep_inform(bot, message, body){
-        reply_text = resp.rep_inform + String(body[0]['amount']) + " " + body[0]['product_name'] + " " + body[0]['color'] + " size " + body[0]['size'];
+        var order_text = String(body[0]['amount']) + " " + body[0]['product_name'];
+        if (body[0]['product_name'].indexOf(body[0]['color']) !== - 1){
+            order_text = order_text + " size " + body[0]['size'];
+        }
+        else{
+            order_text = order_text + " màu " + body[0]['color'] + " size " + body[0]['size'];
+        }
+        reply_text = resp.rep_inform + order_text;
         bot.reply(message, {
             text: reply_text,
         });

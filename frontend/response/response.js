@@ -24,7 +24,11 @@ module.exports = {
     found_lots_products:"Quý khách muốn đặt",
     rep_hello: "Shop chào bạn ạ",
     rep_done: "Chân thành cảm ơn quý khách đã tin tưởng đặt hàng tại shop",
-    rep_inform: "Shop xin chốt lại đơn hàng của mình nhé: ",
+
+    // rep_inform: "Shop xin chốt lại đơn hàng của mình nhé: ",
+    rep_inform: "Dạ đơn hàng của chị là: ",
+
+
     rep_request: "Shop chào bạn ạ request",
     rep_feedback: "Shop chào bạn ạ feedback",
     rep_connect: "Shop chào bạn ạ connect",

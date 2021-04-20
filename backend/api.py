@@ -8,7 +8,7 @@ import base64
 import requests
 import codecs
 
-url = "http://103.113.83.246:8001/api/v1.0/imagesearch"
+url = "http://103.113.83.51:8001/api/v1.0/imagesearch"
 
 app = Flask(__name__)
 CORS(app)

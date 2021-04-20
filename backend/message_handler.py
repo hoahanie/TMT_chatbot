@@ -124,17 +124,34 @@ def predict_message(message):
 
         if intent in ['inform','order']:
             color, size, amount, product_name = get_entity_from_message(message)
-            # print('met quia')
-            # print(amount)
+
+            print('+++++++++')
+            print(message)
+            print(color)
+            print(size)
+            print(product_name)
+
+            # normalize size: convert size s/xl/m/xXL -> S/XL/M/XXL, ao khoac S -> S...
             if size:
-                if 'xxl' in size.lower():
-                    size = 'XXL'
-                elif 'xl' in size.lower():
-                    size = 'XL'
-                elif 'l' in size.lower():
-                    size = 'L'
-                elif 's' in size.lower():
-                    size = 'S'
+                for word in ['size', 'sai', 'sz']:
+                    if word in size:
+                        size = size[size.index(word)+len(word)+1:]
+                        break
+                if product_name:
+                    if product_name in size:
+                        size = size[size.index(product_name)+len(product_name)+1:]
+                size = size.upper()
+        
+            # if size:
+            #     if 'xxl' in size.lower():
+            #         size = 'XXL'
+            #     elif 'xl' in size.lower():
+            #         size = 'XL'
+            #     elif 'l' in size.lower():
+            #         size = 'L'
+            #     elif 'm' in size
+            #     elif 's' in size.lower():
+            #         size = 'S'
             if amount:
                 amount = amount_to_int(amount)
             
@@ -167,20 +184,26 @@ def predict_message(message):
 
 
             
-
-
+            print(new_order)
             print('*********')
             color, size, amount, product_name = new_order[0], new_order[1], new_order[2], new_order[3]
+            if 'màu' in color:
+                color = color[color.index('màu')+4:] # normalize 'màu xxx' -> 'xxx'
             print(amount)
             print(color)
             print(size)
             print(product_name)
+
             if not product_name:
-                res['rep_order_product_name'] = {'color': color,'size': size,'amount': amount,'product_name': product_name}
+                # res['rep_order_product_name'] = {'color': color,'size': size,'amount': amount,'product_name': product_name}
+                print("INFORM")
+                res['dontunderstand'] = None
             elif not color:
                 suggestion = suggest_product(product_name, color, size, amount)
                 if not suggestion:
                     res['not_found_product'] = None
+                # elif len(suggestion == 1):
+
                 else:
                     res['rep_order_color'] = {'color':color,'size': size,'amount': amount,'product_name': product_name,'suggestion': suggestion}
             elif not size:
@@ -211,12 +234,16 @@ def predict_message(message):
             # print('Sao choi')
             # print(check_reject)
             # print(conversation_history)
-            if conversation_history:
-                if ('rep_order' in conversation_history[-1] or 'rep_inform' in conversation_history[-1]) and check_reject:
+            if last_order:
+                if check_reject:
+                # if ('rep_order' in conversation_history[-1] or 'rep_inform' in conversation_history[-1]) and check_reject:
                     print('REJECT')
                     res['transfer_to_admin'] = None
                 else:
                     res['have_product_name'] = last_order
+            else:
+                print("REQUESTTTTTTT")
+                res['dontunderstand'] = None
         else:
             res['rep_' + intent] = None
     else:

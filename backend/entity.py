@@ -235,6 +235,7 @@ def findall_index(pattern, sent, entity):
     return list_sub
 
 def get_entity_sq_from_list_pt(list_pattern, sent, entity):
+    sent = sent.lower()
     list_entity_sq = []
     for pattern in list_pattern:
         list_index_pt = findall_index(pattern, sent, entity)
@@ -260,6 +261,17 @@ if __name__ == "__main__":
     print(MODELS_PATH)
     # print(label_entity("mình đặt 1 cái áo size S màu đỏ"))
     # print(get_entity_sq_from_list_pt(pattern_list, "mình đặt 1 cái áo size S màu đỏ", "color_product"))
-    print(get_entity_sq_from_list_pt(pattern_list['number'], '10 cái', 'number'))
-    string = '10 cái'
-    print(int('10'))
+    print(get_entity_sq_from_list_pt(pattern_list['size'], 'S', 'size'))
+    string = '1 set xanh size M'
+
+    message = '10 cái đầm body nút màu da size M'
+    # message = message.lower()
+    color = get_entity_sq_from_list_pt(pattern_list['color_product'], message, 'color_product')
+    size = get_entity_sq_from_list_pt(pattern_list['size'], message, 'size')
+    amount = get_entity_sq_from_list_pt(pattern_list['amount_product'], message, 'amount_product')
+    product_name = get_entity_sq_from_list_pt(pattern_list['product_name'], message, 'product_name')
+    print(color)
+    print(size)
+    print(amount)
+    print(product_name)
+    print(message[27:33])
