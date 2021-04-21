@@ -2,6 +2,7 @@ resp = require("../response/response.js");
 request = require("request");
 sync = require("sync-request");
 
+const { dont_have_product } = require("../response/response.js");
 var UserController = require("../utils/usercontroller.js");
 const CONVERSATION_MANAGER_ENDPOINT = "http://localhost:5000/api/send-message";
 
@@ -279,11 +280,19 @@ module.exports = function (controller) {
         store_conversation(message.user, body, message.text, reply_text);
     }
 
-    function have_product_name(bot, message, body){
+    function have_product(bot, message, body){
         bot.reply(message, {
-            text: resp.have_product_name,
+            text: resp.have_product,
         });
-        reply_text = resp.have_product_name;
+        reply_text = resp.have_product;
+        store_conversation(message.user, body, message.text, reply_text);
+    }
+
+    function dont_have_product(bot, message, body){
+        bot.reply(message, {
+            text: resp.dont_have_product,
+        });
+        reply_text = resp.dont_have_product;
         store_conversation(message.user, body, message.text, reply_text);
     }
 
@@ -473,8 +482,11 @@ module.exports = function (controller) {
                     case "rep_return":
                         rep_return(bot, message, body);
                         break;
-                    case "have_product_name":
-                        have_product_name(bot, message, body);
+                    case "have_product":
+                        have_product(bot, message, body);
+                        break;
+                    case "dont_have_product":
+                        dont_have_product(bot, message, body);
                         break;
                     case "nothing":
                         nothing(bot, message, body);

@@ -16,6 +16,9 @@ mydb = myclient["shopping_data"]
 mycol = mydb["Hume"]
 
 # mydoc = mycol.find().sort("product_name")
+
+def get_product_from_ID(ID):
+    return [{i:ele[i] for i in ele if i!='_id'} for ele in mycol.find({'product_ID': ID})][0]['product_name']
         
 
 def suggest_product(name, color, size, amount):
@@ -49,6 +52,7 @@ def suggest_product(name, color, size, amount):
 # def suggest_product_from_color(name, color):
     
 # print(suggest_product('set vàng', 'vàng', '', ''))
+# print(get_product_from_ID('D0017'))
     
 
 # print(int(amount_to_int('10 cái')))

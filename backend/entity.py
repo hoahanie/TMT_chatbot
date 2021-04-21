@@ -45,16 +45,15 @@ cost_pt_sum = '{}'.format(cost_pt)
 
 ### AMOUNT_PRODUCT
 
-amount_pt = r'(\d+-)*\d+\s*(' + '|'.join(amount_suf) + r')((\s({})*)|(?=[^a-z]|$))'
-# .format(product_pt) 
-amount_pt_2 = r'(\d+-)*\d+\s*({})'
-# .format(product_pt)
-amount_pt_3 = r'\d+'
+amount_pt = r'(\d+-)*\d+\s*(' + '|'.join(amount_suf) + r')((\s({})*)|(?=[^a-z]|$))'.format(product_pt) 
+amount_pt_2 = r'(\d+-)*\d+\s*({})'.format(product_pt)
+# amount_pt_3 = r'\d+'
 
 # amount_pt_4 = r'[Mm]([ôoộọ]t|ười)|[Hh]ai|[Bb](a|ốn|ảy]|[Nn]ăm|[Ss]áu|[Tt]ám|[Cc]hín'
-amount_pt_4 = r'[Hh]ai|[Mm](ột|ười)|[Bb](a|ốn|ảy)|[Nn]ăm|[Ss]áu|[Tt]ám|[Cc]hín'
+amount_pt_3 = r'([Hh]ai|[Mm](ột|ười)|[Bb](a|ốn|ảy)|[Nn]ăm|[Ss]áu|[Tt]ám|[Cc]hín)\s*(' + '|'.join(amount_suf) + r')'
 # amount_pt_4 = r'năm'
-amount_pt_sum = r'{}|{}|{}|{}'.format(amount_pt, amount_pt_2, amount_pt_4, amount_pt_3)
+amount_pt_sum = r'{}|{}|{}'.format(amount_pt, amount_pt_2, amount_pt_3)
+
 ###------------------------------------------
 
 ### MATERIAL_PRODUCT
@@ -120,6 +119,9 @@ pattern_list = {
     ],
     'number':[
         r'[0-9]+'
+    ],
+    'check_product':[ # còn, con, bn, bnhiu, bnhiêu, bao nhiêu, bao nhiu
+        r'c[oò]n|b(ao)?\s*n(hi[êe]?u)?'
     ]
 }
 
@@ -261,17 +263,24 @@ if __name__ == "__main__":
     print(MODELS_PATH)
     # print(label_entity("mình đặt 1 cái áo size S màu đỏ"))
     # print(get_entity_sq_from_list_pt(pattern_list, "mình đặt 1 cái áo size S màu đỏ", "color_product"))
-    print(get_entity_sq_from_list_pt(pattern_list['size'], 'S', 'size'))
-    string = '1 set xanh size M'
+    
+    # ------------------------------
+    # print(get_entity_sq_from_list_pt(pattern_list['size'], 'S', 'size'))
+    # string = '1 set xanh size M'
 
-    message = '10 cái đầm body nút màu da size M'
-    # message = message.lower()
-    color = get_entity_sq_from_list_pt(pattern_list['color_product'], message, 'color_product')
-    size = get_entity_sq_from_list_pt(pattern_list['size'], message, 'size')
-    amount = get_entity_sq_from_list_pt(pattern_list['amount_product'], message, 'amount_product')
-    product_name = get_entity_sq_from_list_pt(pattern_list['product_name'], message, 'product_name')
-    print(color)
-    print(size)
-    print(amount)
-    print(product_name)
-    print(message[27:33])
+    # message = '10 cái đầm body nút màu da size M'
+    # # message = message.lower()
+    # color = get_entity_sq_from_list_pt(pattern_list['color_product'], message, 'color_product')
+    # size = get_entity_sq_from_list_pt(pattern_list['size'], message, 'size')
+    # amount = get_entity_sq_from_list_pt(pattern_list['amount_product'], message, 'amount_product')
+    # product_name = get_entity_sq_from_list_pt(pattern_list['product_name'], message, 'product_name')
+    # print(color)
+    # print(size)
+    # print(amount)
+    # print(product_name)
+    # print(message[27:33])
+
+    # print(get_entity_sq_from_list_pt(pattern_list['check_product'], "bao n hieu vay shop ?", "check_product"))
+    print(get_entity_sq_from_list_pt(pattern_list['amount_product'], "1m65 55kg một cái ?", "amount"))
+    text = '1m65 55kg một cái'
+    print(text[10:17])
