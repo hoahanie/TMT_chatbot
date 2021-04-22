@@ -21,11 +21,6 @@ from functools import reduce
 
 def catch_intent(message):
     message = preprocess_message(message)
-    # print(message)
-
-    # intent = extract_and_get_intent(message)
-    # if intent != 'none':
-    #     return intent
     return predict_message(message)
 
 def catch_image(product_ID):
@@ -82,15 +77,25 @@ def get_entity_from_message(message):
     size = get_entity_sq_from_list_pt(pattern_list['size'], message, 'size')
     amount = get_entity_sq_from_list_pt(pattern_list['amount_product'], message, 'amount_product')
     product_name = get_entity_sq_from_list_pt(pattern_list['product_name'], message, 'product_name')
-    if color:
-        color = message[color[0][0]:color[0][1]]
-    if size:
-        size = message[size[0][0]:size[0][1]]
-    if amount:
-        amount = message[amount[0][0]:amount[0][1]]
-    if product_name:
-        product_name = message[product_name[0][0]:product_name[0][1]]
-    return color, size, amount, product_name
+
+    weight = get_entity_sq_from_list_pt(pattern_list['weight customer'], message, 'weight_customer')
+    height = get_entity_sq_from_list_pt(pattern_list['height customer'], message, 'height_customer')
+    v1 = get_entity_sq_from_list_pt(pattern_list['v1'], message, 'v1_customer')
+    v2 = get_entity_sq_from_list_pt(pattern_list['v2'], message, 'v2_customer')
+    v3 = get_entity_sq_from_list_pt(pattern_list['v3'], message, 'v3_customer')
+
+
+    color = message[color[0][0]:color[0][1]] if color else []
+    size = message[size[0][0]:size[0][1]] if size else []
+    amount = message[amount[0][0]:amount[0][1]] if amount else []
+    product_name = message[product_name[0][0]:product_name[0][1]] if product_name else []
+    weight = message[weight[0][0]:weight[0][1]] if weight else []
+    height = message[height[0][0]:height[0][1]] if height else []
+    v1 = message[v1[0][0]:v1[0][1]] if v1 else []
+    v2 = message[v2[0][0]:v2[0][1]] if v2 else []
+    v3 = message[v3[0][0]:v3[0][1]] if v3 else []
+    
+    return color, size, amount, product_name, weight, height, v1, v2, v3
 
 def amount_to_int(amount):
     amount_index = get_entity_sq_from_list_pt(pattern_list['number'], amount, 'number')
@@ -153,13 +158,23 @@ def predict_message(message):
                         break
 
         if intent in ['inform', 'order', 'request']:
-            color, size, amount, product_name = get_entity_from_message(message)
+            color, size, amount, product_name, weight, height, v1, v2, v3 = get_entity_from_message(message)
 
             print('+++++++++')
             print(message)
-            print(color)
-            print(size)
-            print(product_name)
+            print(weight)
+            print(height)
+            print(v1)
+            print(v2)
+            print(v3)
+
+            # normalize weight
+            if weight:
+                weight_index = get_entity_sq_from_list_pt(pattern_list['number'], message, 'weight_number')
+                weight = weight[weight_index[0][0]:weight_index[0][1]]
+                weight = int(weight)
+            else:
+                weight = 0
 
             # normalize size: convert size s/xl/m/xXL -> S/XL/M/XXL, ao khoac S -> S...
             if size:
@@ -243,7 +258,7 @@ def predict_message(message):
                 if not suggestion:
                     res['not_found_product'] = None
                 else:
-                    res['rep_order_size'] = {'color':color,'size': size,'amount': amount,'product_name': product_name,'suggestion': suggestion}
+                    res['have_product'] = {'color':color,'size': size,'amount': amount,'product_name': product_name,'suggestion': suggestion}
             elif not amount:
                 suggestion = suggest_product(product_name, color, size, amount)
                 # print('+++++')
@@ -295,47 +310,6 @@ def predict_message(message):
         res['nothing'] = None
     
     return res
-
-
-    # check1=True
-    # check2=True
-
-    # #Check color
-    # tfidfconverter = pickle.load(open('tfidf_color.pickle', 'rb'))
-    # clf = pickle.load(open('color_pickle', 'rb'))
-    # X_corp_tfidf = tfidfconverter.transform(X_corp).toarray()
-    # y_corp_pred = clf.predict(X_corp_tfidf)
-    # if int(y_corp_pred[0]) ==1:
-    #     check1=True
-    # else:
-    #     check1=False
-    # # if check1==True:
-    # #     return "color"
-    # print("check1")
-    # print (check1)
-
-    # #Check size
-    # tfidfconverter = pickle.load(open('tfidf_size.pickle', 'rb'))
-    # clf = pickle.load(open('size_pickle', 'rb'))
-    # X_corp_tfidf = tfidfconverter.transform(X_corp).toarray()
-    # y_corp_pred = clf.predict(X_corp_tfidf)
-    # if int(y_corp_pred[0]) ==1:
-    #     check2=True
-    # else:
-    #     check2=False
-    # # if check2==True:
-    # #     return "size"
-    # print("check2")
-    # print (check2)
-
-    # # if check1==True and check2==True:
-    # #     return "color_size"
-    # if check1==True and check2==False:
-    #     return "color"   
-    # if check1==False and check2==True:
-    #     return "size"
-    # if check1==False and check2==False:
-    #     return "nothing"
 
 
 def preprocess_message(message):
@@ -481,28 +455,3 @@ def compound2unicode(text):
     text = text.replace("\u00C2\u0323", "\u1EAC")  # Ậ
     text = text.replace("\u00C2\u0303", "\u1EAA")  # Ẫ
     return text
-
-
-# def get_name_intent(id):
-#     if id == 0:
-#         return 'chiphi'
-#     if id == 1:
-#         return 'diadiem'
-#     if id == 2:
-#         return 'giayto'
-#     if id == 3:
-#         return 'ketqua'
-#     if id == 4:
-#         return 'thoigian'
-#     if id == 5:
-#         return 'thuchien'
-#     return 'none'
-
-
-def update(a, b):
-    a.update(b)
-    return a
-
-
-def flatten(result):
-    return list(map(lambda x: reduce(update, x), result))

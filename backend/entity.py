@@ -74,8 +74,6 @@ pt_size = r'{}|{}|{}'.format(pt_size_1, pt_size_2, pt_size_3)
 
 
 
-
-
 ### list of pattern
 list_entity_using_regex = ['phone', 'weight customer', 'height customer', 
                             'size', 'color_product',
@@ -118,10 +116,19 @@ pattern_list = {
         r'[kK]|[kK][hH]|[kK][oO]|[kKhH]h[ôo]ng|[nN][oO]|[Ss][aA][Ii]'
     ],
     'number':[
-        r'[0-9]+'
+        r'\d+'
     ],
     'check_product':[ # còn, con, bn, bnhiu, bnhiêu, bao nhiêu, bao nhiu
         r'c[oò]n|b(ao)?\s*n(hi[êe]?u)?'
+    ],
+    'v1':[
+        r'(ng[uự]c|v([oò]ng)?\s*1)\s*[1-9][1-9][0-9]?'
+    ],
+    'v2':[
+        r'(eo|v([oò]ng)?\s*2)\s*[1-9][1-9][0-9]?'
+    ],
+    'v3':[
+        r'(m[oô]ng|v([oò]ng)?\s*3)\s*[1-9][1-9][0-9]?'
     ]
 }
 
